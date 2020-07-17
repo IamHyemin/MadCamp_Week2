@@ -41,7 +41,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="30dp"
-        android:id = "@+id/edit_password"
+        android:id = "@+id/edt_password"
         />
 
 

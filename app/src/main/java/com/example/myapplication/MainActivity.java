@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view){
                 loginUser(edt_login_email.getText().toString(),
                         edt_login_password.getText().toString());
+
             }
         });
         txt_create_account = findViewById(R.id.txt_create_account);
@@ -121,8 +122,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
-
         callbackManager = CallbackManager.Factory.create();
 
         LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
@@ -135,17 +134,19 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onCompleted(JSONObject object, GraphResponse response) {
                                 Log.v("result",object.toString());
-                                Intent i = new Intent(getApplicationContext(),LoginAfter.class);
-//                                try {
-//                                    String name = object.getString("name");
-//                                } catch (JSONException e) {
-//                                    e.printStackTrace();
-//                                }
-//                                try {
-//                                    String email = object.getString("email");
-//                                } catch (JSONException e) {
-//                                    e.printStackTrace();
-//                                }
+                                Intent i = new Intent(getApplicationContext(), LoginAfter.class);
+                                try {
+                                    String name = object.getString("name");
+                                    i.putExtra("name", name);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                try {
+                                    String email = object.getString("email");
+                                    i.putExtra("email", email);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
                                 startActivity(i);
                                 finish();
                             }
@@ -167,23 +168,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-//        id_input = findViewById(R.id.id);
-//        password_input=findViewById(R.id.password);
-//        login = findViewById(R.id.btn_login);
-//
-//        login.setOnClickListener(new View.OnClickListener(){
-//            @Override
-//            public void onClick(View v){
-//                String id = id_input.getText().toString();
-//                String password = password_input.getText().toString();
-//
-//                Intent intent = new Intent();
-//                intent.putExtra("id", id);
-//                intent.putExtra("password", password);
-//                startActivity(intent);
-//            }
-//        });
-
     }
 
 
@@ -200,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
         );
     }
 
-    private void loginUser(String email, String password){
+    private void loginUser(final String email, String password){
         if (TextUtils.isEmpty(email)){
             Toast.makeText(this, "Email cannot be null or empty", Toast.LENGTH_SHORT).show();
             return;
@@ -216,6 +200,10 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void accept(String response) throws Exception {
                         Toast.makeText(MainActivity.this, ""+response, Toast.LENGTH_SHORT).show();
+                        Intent i = new Intent(getApplicationContext(), LoginAfter.class);
+                        i.putExtra("email", email);
+                        startActivity(i);
+                        finish();
                     }
                 })
         );
