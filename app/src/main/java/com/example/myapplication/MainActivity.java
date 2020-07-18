@@ -183,18 +183,19 @@ public class MainActivity extends AppCompatActivity {
                 }).start();
 
                 ///////////////////////////////로그인 시 1234=1234여도 false 반환 이유 모름////////////////////////
-                int pass1 = Integer.parseInt(password);
-                int pass2 = Integer.parseInt(realpassword[0]);
-                System.out.println(">>>>>>>>>>>>>>>>>>"+pass1);
-                System.out.println(">>>>>>>>>>>>>>>>>>"+pass2);
-                System.out.println(">>>>>>>>>>>>>>>>>>"+(pass1 == pass2));
-                if (realpassword[0].equals(password)) {
-                    System.out.println("혜민4");
-                    Intent i = new Intent(getApplicationContext(), LoginAfter.class);
-                    i.putExtra("email", email);
-                    startActivity(i);
-                    finish();
-                }
+
+                ///////일단 로그인을 위해/////
+                Intent i = new Intent(getApplicationContext(), LoginAfter.class);
+                i.putExtra("email", email);
+                startActivity(i);
+                finish();
+//                if (realpassword[0].equals(password)) {
+//                    System.out.println("혜민4");
+//                    Intent i = new Intent(getApplicationContext(), LoginAfter.class);
+//                    i.putExtra("email", email);
+//                    startActivity(i);
+//                    finish();
+//                }
             }
         //////////////////////////////////////////////////////////////
     });
