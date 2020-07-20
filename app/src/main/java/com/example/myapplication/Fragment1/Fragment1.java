@@ -88,6 +88,7 @@ public class Fragment1 extends Fragment {
                 try {
                     Response<User> loginUser_res = retrofitClient.getUser(email).execute();
                     final User loginUser = loginUser_res.body();
+                    assert loginUser != null;
                     final String[] friendList = loginUser.getFriendsList();
                     final String name = loginUser.getName();
                     final String phoneNum = loginUser.getPhoneNum();
@@ -247,9 +248,11 @@ public class Fragment1 extends Fragment {
                 try {
                     Response<User> loginUser_res = retrofitClient.getUser(email).execute();
                     final User loginUser = loginUser_res.body();
+                    assert loginUser != null;
                     final String[] friendList = loginUser.getFriendsList();
                     for (String email_friend : friendList) {
                         User friend = retrofitClient.getUser(email_friend).execute().body();
+                        assert friend != null;
                         System.out.println("friend is "+ friend.getName());
                         userList.add(friend);
                     }

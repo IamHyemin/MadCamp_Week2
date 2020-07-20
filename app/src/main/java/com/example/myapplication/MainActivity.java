@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
                                         @Override
                                         public void run() {
                                             ////////////////////////////// db에 없으면 데이터 추가 : 이미 존재하는 데이터면 안 들어갈 것이라 가정 ///////////////////////////
-                                            Call<User> createFaceBook = retrofitClient.createUser(new User(name, email, "0000"));
+                                            Call<User> createFaceBook = retrofitClient.createUser(new User(name, email, "00000000!a"));
                                             try {
                                                 createFaceBook.execute();
                                             } catch (IOException e) {

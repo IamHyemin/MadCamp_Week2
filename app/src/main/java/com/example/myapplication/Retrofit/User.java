@@ -18,6 +18,14 @@ public class User {
         this.password = password;
     }
 
+    public User( String name, String email, String password, String[] friendsList){
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.friendsList = friendsList;
+    }
+
+
     public User(String name, String password, String phoneNum, String state, String[] likeList ){
         this.name = name;
         this.password = password;
