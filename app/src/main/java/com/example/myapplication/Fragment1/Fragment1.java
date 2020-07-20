@@ -1,16 +1,19 @@
 package com.example.myapplication.Fragment1;
 
-import android.app.ActionBar;
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -18,12 +21,14 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.example.myapplication.MainActivity;
 import com.example.myapplication.R;
 import com.example.myapplication.Retrofit.IMyService;
 import com.example.myapplication.Retrofit.RetrofitClient;
@@ -31,11 +36,9 @@ import com.example.myapplication.Retrofit.User;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Objects;
 
-import retrofit2.Call;
 import retrofit2.Response;
 
 public class Fragment1 extends Fragment {
@@ -43,10 +46,10 @@ public class Fragment1 extends Fragment {
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         ////////////////////////////////// action bar /////////////////////////////////////////
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayUseLogoEnabled(true);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setLogo(R.drawable.honbab_main);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayUseLogoEnabled(true);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setLogo(R.drawable.honbab_main);
         ////////////////////////////////////////////////////////////////////////////////////////
 
         final View view = inflater.inflate(R.layout.fragment1, container, false);
@@ -54,6 +57,8 @@ public class Fragment1 extends Fragment {
 
         final String email = Objects.requireNonNull(intent.getExtras()).getString("email");
         final IMyService retrofitClient = RetrofitClient.getApiService();
+        final LocationManager lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+
 
 //        ////////////////////////////////////// 전체 user 받아오기 //////////////////////////////////
 //        Response<ArrayList<User>> allUser = null;
@@ -132,8 +137,22 @@ public class Fragment1 extends Fragment {
 
                                             String[] likeList = likeList_bfr.split(", ");
 
+                                            if ( Build.VERSION.SDK_INT >= 23 &&
+                                                    ContextCompat.checkSelfPermission( getActivity().getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
+                                                ActivityCompat.requestPermissions( getActivity(), new String[] {  android.Manifest.permission.ACCESS_FINE_LOCATION  },
+                                                        0 );
+                                            }
+                                            else {
+                                                Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                                                String provider = location.getProvider();
+                                                double longitude = location.getLongitude();
+                                                double latitude = location.getLatitude();
+                                                position_get[0] = latitude;
+                                                position_get[1] = longitude;
+                                            }
                                             User updateUser = new User(name, email, password, position_get, phoneNum, state, likeList, friendList);
                                             retrofitClient.updateUser(email, updateUser);
+                                            Toast.makeText(getContext(), "Your information with position is stored.", Toast.LENGTH_SHORT).show();
                                         }
                                     }).start();
                                 }

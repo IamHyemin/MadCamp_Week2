@@ -101,8 +101,6 @@ public class MainActivity extends AppCompatActivity {
         ////////////////////////////// facebook login ///////////////////////////////////////
         callbackManager = CallbackManager.Factory.create();
 
-        System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
-
         LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
         loginButton.setReadPermissions(Arrays.asList("public_profile", "email"));
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
@@ -111,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
                 GraphRequest graphRequest = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
                             @Override
                             public void onCompleted(JSONObject object, GraphResponse response) {
-                                Log.v("result", object.toString());
+                                Toast.makeText(MainActivity.this, "Login Success!", Toast.LENGTH_SHORT).show();
                                 Intent i = new Intent(getApplicationContext(), LoginAfter.class);
                                 try {
                                     ////////////////////// facebook login information throw to intent and db ////////////////////////
@@ -180,6 +178,7 @@ public class MainActivity extends AppCompatActivity {
                                     @Override
                                     public void run() {
                                         if (realpassword[0].equals(password)) {
+                                            Toast.makeText(MainActivity.this, "Login Success!", Toast.LENGTH_SHORT).show();
                                             Intent i = new Intent(getApplicationContext(), LoginAfter.class);
                                             i.putExtra("email", email);
                                             startActivity(i);
@@ -198,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
             }
         //////////////////////////////////////////////////////////////
     });
-
+    ////////////////////////////////////////////////// registeration ////////////////////////////////////////////////
         txt_create_account = findViewById(R.id.txt_create_account);
         txt_create_account.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -238,7 +237,8 @@ public class MainActivity extends AppCompatActivity {
                                 new Thread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        Call<User> createFaceBook = retrofitClient.createUser(new User(edt_register_email.getText().toString(), edt_register_name.getText().toString(), edt_register_password.getText().toString()));
+                                        Call<User> createFaceBook = retrofitClient.createUser(new User(edt_register_name.getText().toString(), edt_register_email.getText().toString(),  edt_register_password.getText().toString()));
+                                        System.out.println("Email is "+edt_register_email.getText().toString());
                                         try {
                                             createFaceBook.execute();
                                         } catch (IOException e) {

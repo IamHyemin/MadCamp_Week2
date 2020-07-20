@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class User {
     private String name;
-    private String phoneNum = "010-0000-0000";
+    private String phoneNum;
     private String email;
     private String password;
     private Double[] position = new Double[]{36.372333, 127.360411};
@@ -12,7 +12,7 @@ public class User {
     private String[] likeList = {};
     private String[] friendsList = {};
 
-    public User(String name, String email, String password){
+    public User( String name, String email, String password){
         this.name = name;
         this.email = email;
         this.password = password;
