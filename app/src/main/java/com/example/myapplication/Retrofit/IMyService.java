@@ -28,6 +28,11 @@ public interface IMyService {
     @PUT("/api/users/{user_email}")
     Call<User> updateUser(@Path("user_email") String user_email, @Body User user);
 
+    // UPDATE THE User Friend
+    @PUT("/api/users/friend/{user_email}/{friend_email}")
+    Call<User> updateUserFriend(@Path("user_email") String user_email, @Path("friend_email") String friend_email);
+
+
     // DELETE SINGLE USER BY EMAIL
     @DELETE("/api/users/{user_email}")
     Call<User> deleteUser(@Path("user_email") String user_email);

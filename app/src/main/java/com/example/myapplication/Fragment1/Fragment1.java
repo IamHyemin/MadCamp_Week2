@@ -41,6 +41,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import retrofit2.Call;
 import retrofit2.Response;
 
 public class Fragment1 extends Fragment {
@@ -186,9 +187,6 @@ public class Fragment1 extends Fragment {
             }
         }).start();
 
-
-
-
         //////////////////////////////////////////FAB로 update -> 수정 예정////////////////////////////////////////////////////////
 
         FloatingActionButton phone_fab = view.findViewById(R.id.phone_fab);
@@ -199,24 +197,26 @@ public class Fragment1 extends Fragment {
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
                 View addphoneView = inflater.inflate(R.layout.update_user, container, false);
                 alertDialog.setView(addphoneView);
-                final EditText name_get = addphoneView.findViewById(R.id.update_name);
-                final EditText pass_get = addphoneView.findViewById(R.id.update_pass);
-                final EditText state_get = addphoneView.findViewById(R.id.update_state);
-                final EditText like_get = addphoneView.findViewById(R.id.update_likeList);
-                final EditText phone_get = addphoneView.findViewById(R.id.update_phone);
+                final EditText email_get = addphoneView.findViewById(R.id.update_friend);
                 alertDialog.setPositiveButton("UPDATE", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        final String name = name_get.getText().toString();
-                        final String pass = pass_get.getText().toString();
-                        final String state = state_get.getText().toString();
-                        final String like = like_get.getText().toString();
-                        final String phone = phone_get.getText().toString();
+                        final String email_friend = email_get.getText().toString();
                         new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                User updateUser = new User(name, pass, phone, state, new String[]{like});
-                                retrofitClient.updateUser(email, updateUser);
+                                try {
+                                    Response<User> newfriend = retrofitClient.updateUserFriend(email, email_friend).execute();
+                                    if (newfriend.code() == 400){
+                                        Toast.makeText(getContext(), "You cannot be your friend", Toast.LENGTH_SHORT).show();
+                                    }else if (newfriend.code() == 404){
+                                        Toast.makeText(getContext(), "There is no user who has the email", Toast.LENGTH_SHORT).show();
+                                    }else{
+                                        Toast.makeText(getContext(), "Success!", Toast.LENGTH_SHORT).show();
+                                    }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         }).start();
                     }
@@ -229,84 +229,114 @@ public class Fragment1 extends Fragment {
 
         //////////////////////////////////////// listview 누르면 친구 정보 더 보기 //////////////////////////////////////
         //for test array
-        ArrayList<User> userList = new ArrayList();
-        userList.add(new User("Banana", "banana@naver.com", "1234"));
-        userList.add(new User("Apple", "apple@naver.com", "12345"));
+        final ArrayList<User> userList = new ArrayList();
+//        userList.add(new User("Banana", "banana@naver.com", "1234"));
+//        userList.add(new User("Apple", "apple@naver.com", "12345"));
 
-        PhoneAdapter adapter = new PhoneAdapter(userList, getContext());
-
-        ListView listView = view.findViewById(R.id.listView);
-        listView.setAdapter(adapter);
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        new Thread(new Runnable() {
             @Override
-            public void onItemClick(AdapterView parent, View v, int position, long id) {
-                // get item
-                User user = (User) parent.getItemAtPosition(position);
+            public void run() {
+                try {
+                    Response<User> loginUser_res = retrofitClient.getUser(email).execute();
+                    final User loginUser = loginUser_res.body();
+                    final String[] friendList = loginUser.getFriendsList();
+                    System.out.println("the number of friend is "+friendList.length);
+                    for (String email_friend : friendList) {
+                        User friend = retrofitClient.getUser(email_friend).execute().body();
+                        System.out.println("friend is "+ friend.getName());
+                        userList.add(friend);
+                    }
 
-                final String num = user.getPhoneNum();
-                String userName = user.getName();
-                String state = user.getState();
-                String[] food = user.getLikeList();
+                    final PhoneAdapter adapter = new PhoneAdapter(userList, getContext());
 
-                View friend = inflater.inflate(R.layout.friends_detail, container, false);
-                AlertDialog.Builder alertDialog =  new AlertDialog.Builder(getContext());;
-                TextView nameView = friend.findViewById(R.id.friend_name);
-                TextView phoneView = friend.findViewById(R.id.friend_phone);
-                TextView stateView = friend.findViewById(R.id.friend_state);
-                TextView likeView = friend.findViewById(R.id.friend_likeList);
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run() {
 
-                alertDialog.setView(friend);
-                nameView.setText(userName);
-                phoneView.setText(num);
-                stateView.setText(state);
+                            ListView listView = view.findViewById(R.id.listView);
+                            listView.setAdapter(adapter);
 
-                String printfood = "";
-                for (String elt : food){
-                    printfood += elt+", ";
+                            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView parent, View v, int position, long id) {
+                                    // get item
+                                    User user = (User) parent.getItemAtPosition(position);
+
+                                    final String num = user.getPhoneNum();
+                                    String userName = user.getName();
+                                    String state = user.getState();
+                                    String[] food = user.getLikeList();
+
+                                    View friend = inflater.inflate(R.layout.friends_detail, container, false);
+                                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
+                                    ;
+                                    TextView nameView = friend.findViewById(R.id.friend_name);
+                                    TextView phoneView = friend.findViewById(R.id.friend_phone);
+                                    TextView stateView = friend.findViewById(R.id.friend_state);
+                                    TextView likeView = friend.findViewById(R.id.friend_likeList);
+
+                                    alertDialog.setView(friend);
+                                    nameView.setText(userName);
+                                    phoneView.setText(num);
+                                    stateView.setText(state);
+
+                                    String printfood = "";
+                                    for (String elt : food) {
+                                        printfood += elt + ", ";
+                                    }
+                                    likeView.setText(printfood);
+
+                                    ImageButton btn = friend.findViewById(R.id.button);
+                                    btn.setOnClickListener(new View.OnClickListener() {
+                                        String callnum = "tel:" + num;
+
+                                        @Override
+                                        public void onClick(View view) {
+                                            Intent myIntent = new Intent(Intent.ACTION_VIEW);
+                                            myIntent.setData(Uri.parse(callnum));
+                                            try {
+                                                startActivity(myIntent);
+                                            } catch (ActivityNotFoundException e) {
+                                                Intent callIntent = new Intent(Intent.ACTION_VIEW);
+                                                callIntent.setData(Uri.parse(callnum));
+                                                if (callIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                                                    startActivity(callIntent);
+                                                }
+                                            }
+                                        }
+                                    });
+
+                                    ImageButton btn2 = friend.findViewById(R.id.button2);
+                                    btn2.setOnClickListener(new View.OnClickListener() {
+                                        String smsnum = "sms:" + num;
+
+                                        @Override
+                                        public void onClick(View view) {
+                                            Intent myIntent = new Intent(Intent.ACTION_VIEW);
+                                            myIntent.setData(Uri.parse(smsnum));
+                                            try {
+                                                startActivity(myIntent);
+                                            } catch (ActivityNotFoundException e) {
+                                                Intent smsIntent = new Intent(Intent.ACTION_VIEW);
+                                                smsIntent.setData(Uri.parse(smsnum));
+                                                if (smsIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                                                    startActivity(smsIntent);
+                                                }
+                                            }
+                                        }
+                                    });
+                                    alertDialog.show();
+                                }
+                            });
+                        }
+                    });
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-                likeView.setText(printfood);
-
-                ImageButton btn = friend.findViewById(R.id.button);
-                btn.setOnClickListener(new View.OnClickListener() {
-                    String callnum = "tel:" + num;
-                    @Override
-                    public void onClick(View view) {
-                        Intent myIntent = new Intent(Intent.ACTION_VIEW);
-                        myIntent.setData(Uri.parse(callnum));
-                        try {
-                            startActivity(myIntent);
-                        } catch (ActivityNotFoundException e) {
-                            Intent callIntent = new Intent(Intent.ACTION_VIEW);
-                            callIntent.setData(Uri.parse(callnum));
-                            if (callIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-                                startActivity(callIntent);
-                            }
-                        }
-                    }
-                });
-
-                ImageButton btn2 = friend.findViewById(R.id.button2);
-                btn2.setOnClickListener(new View.OnClickListener() {
-                    String smsnum = "sms:" + num;
-                    @Override
-                    public void onClick(View view) {
-                        Intent myIntent = new Intent(Intent.ACTION_VIEW);
-                        myIntent.setData(Uri.parse(smsnum));
-                        try {
-                            startActivity(myIntent);
-                        } catch (ActivityNotFoundException e) {
-                            Intent smsIntent = new Intent(Intent.ACTION_VIEW);
-                            smsIntent.setData(Uri.parse(smsnum));
-                            if (smsIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-                                startActivity(smsIntent);
-                            }
-                        }
-                    }
-                });
-                alertDialog.show();
             }
-        });
+        }).start();
+
+
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         return view;
