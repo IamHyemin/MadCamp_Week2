@@ -15,7 +15,7 @@
             android:id="@+id/editSearch"
             android:layout_width="match_parent"
             android:layout_height="70dp"
-            android:hint="  Search the User!"
+            android:hint="  Search Your Friends"
             app:backgroundTint = "#EAE6EC"
             />
         <TextView

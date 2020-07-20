@@ -25,7 +25,7 @@ public class VPAdapter extends FragmentPagerAdapter {
 
         itext.add("연락처");
         itext.add("식당");
-        itext.add("설정");
+        itext.add("위치");
     }
 
     @NonNull
