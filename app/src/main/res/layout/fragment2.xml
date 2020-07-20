@@ -22,7 +22,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:scrollbars="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -33,17 +33,34 @@
             app:layout_constraintVertical_bias="0.0"
             />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/gallery_fab"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end|bottom"
-            android:src="@drawable/ic_add_foreground"
-            android:scaleType="centerInside"
-            android:contentDescription="FAB for adding Food"
-            android:layout_margin="16dp"
-            android:backgroundTint="@color/colorPrimaryDark"
-            />
+            android:layout_marginVertical="10dp"
+            android:layout_marginHorizontal="25dp"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text = "원하는 식당이 없나요?"
+                />
+
+            <Space
+                android:layout_width="38dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id = "@+id/add_res"
+                android:text = "식당 추가하기"
+                android:textColor="@color/colorAccent"
+                android:layout_gravity="end"
+                />
+
+        </LinearLayout>
+
 
     </LinearLayout>
 

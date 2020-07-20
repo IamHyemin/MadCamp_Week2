@@ -79,6 +79,8 @@ public class Fragment1 extends Fragment {
         final LocationManager lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
 
+
+
         ////////////////////////////////////// 사용자 정보 받아오기 //////////////////////////////////
         new Thread(new Runnable() {
             @Override
@@ -305,7 +307,7 @@ public class Fragment1 extends Fragment {
 
                                     View friend = inflater.inflate(R.layout.friends_detail, container, false);
                                     AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
-                                    ;
+
                                     TextView nameView = friend.findViewById(R.id.friend_name);
                                     TextView phoneView = friend.findViewById(R.id.friend_phone);
                                     TextView stateView = friend.findViewById(R.id.friend_state);
@@ -375,6 +377,6 @@ public class Fragment1 extends Fragment {
 
         return view;
     }
-    
+
 
 }

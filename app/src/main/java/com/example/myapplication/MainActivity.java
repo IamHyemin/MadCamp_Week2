@@ -218,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
                                 new Thread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        Call<User> createFaceBook = retrofitClient.createUser(new User(edt_register_name.getText().toString(), edt_register_email.getText().toString(),  edt_register_password.getText().toString()));
+                                        Call<User> createFaceBook = retrofitClient.createUser(new User(edt_register_name.getText().toString(),  edt_register_email.getText().toString(),  edt_register_password.getText().toString()));
                                         System.out.println("Email is "+edt_register_email.getText().toString());
                                         try {
                                             createFaceBook.execute();
@@ -230,7 +230,6 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }).show();
             }
-
         });
     }
     @Override
