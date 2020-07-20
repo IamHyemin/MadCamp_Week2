@@ -48,9 +48,9 @@
         android:layout_gravity="end|bottom"
         android:src="@drawable/ic_add_foreground"
         android:scaleType="centerInside"
-        android:contentDescription="FAB for adding Photo"
+        android:contentDescription="FAB for adding Friend"
         android:layout_margin="16dp"
-        android:background="@drawable/gradation1"
+        android:backgroundTint="@color/colorPrimaryDark"
         />
 
 </FrameLayout>

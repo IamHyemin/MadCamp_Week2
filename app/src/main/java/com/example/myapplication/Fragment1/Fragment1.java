@@ -13,6 +13,8 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -93,77 +95,94 @@ public class Fragment1 extends Fragment {
                     final String state = loginUser.getState();
                     final String[] likeList = loginUser.getLikeList();
                     final Double[] position_get = loginUser.getPosition();
-
-                    ArrayList userInfo = new ArrayList();
-                    userInfo.add(loginUser);
-                    PhoneAdapter user_adapter = new PhoneAdapter(userInfo, getContext());
-                    ListView listView = view.findViewById(R.id.listView_user);
-                    listView.setAdapter(user_adapter);
-
-                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
                         @Override
-                        public void onItemClick(AdapterView parent, View v, final int position, long id) {
-                            View User = inflater.inflate(R.layout.user_detail, container, false);
-                            AlertDialog.Builder alertDialog =  new AlertDialog.Builder(getContext());;
-                            TextView nameView = User.findViewById(R.id.user_name);
-                            TextView emailView = User.findViewById(R.id.user_email);
-                            final EditText passwordView = User.findViewById(R.id.user_password);
-                            final EditText phoneView = User.findViewById(R.id.user_phone);
-                            final EditText stateView = User.findViewById(R.id.user_state);
-                            final EditText likeView = User.findViewById(R.id.user_likeList);
+                        public void run() {
+                            final ArrayList userInfo = new ArrayList();
+                            userInfo.add(loginUser);
+                            final PhoneAdapter user_adapter = new PhoneAdapter(userInfo, getContext());
+                            ListView listView = view.findViewById(R.id.listView_user);
+                            listView.setAdapter(user_adapter);
 
-                            alertDialog.setView(User);
-                            nameView.setText(name);
-                            emailView.setText(email);
-                            passwordView.setText(password);
-                            phoneView.setText(phoneNum);
-                            stateView.setText(state);
-                            String likeprint1 = "";
-                            for (String elt: likeList){
-                                likeprint1 = elt+" ";
-                            }
-                            likeView.setText(likeprint1);
-
-                            alertDialog.setPositiveButton("UPDATE", new DialogInterface.OnClickListener() {
+                            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                 @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    new Thread(new Runnable() {
+                                public void onItemClick(AdapterView parent, View v, final int position, long id) {
+                                    View User = inflater.inflate(R.layout.user_detail, container, false);
+                                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
+                                    ;
+                                    TextView nameView = User.findViewById(R.id.user_name);
+                                    TextView emailView = User.findViewById(R.id.user_email);
+                                    final EditText passwordView = User.findViewById(R.id.user_password);
+                                    final EditText phoneView = User.findViewById(R.id.user_phone);
+                                    final EditText stateView = User.findViewById(R.id.user_state);
+                                    final EditText likeView = User.findViewById(R.id.user_likeList);
+
+                                    alertDialog.setView(User);
+                                    nameView.setText(name);
+                                    emailView.setText(email);
+                                    passwordView.setText(password);
+                                    phoneView.setText(phoneNum);
+                                    stateView.setText(state);
+                                    String likeprint1 = "";
+                                    for (String elt : likeList) {
+                                        likeprint1 = elt + " ";
+                                    }
+                                    likeView.setText(likeprint1);
+
+                                    alertDialog.setPositiveButton("UPDATE", new DialogInterface.OnClickListener() {
                                         @Override
-                                        public void run() {
-                                            final String password = passwordView.getText().toString();
-                                            final String phoneNum = phoneView.getText().toString();
-                                            final String state = stateView.getText().toString();
-                                            final String likeList_bfr = likeView.getText().toString();
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            new Thread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    final String password = passwordView.getText().toString();
+                                                    final String phoneNum = phoneView.getText().toString();
+                                                    final String state = stateView.getText().toString();
+                                                    final String likeList_bfr = likeView.getText().toString();
 
-                                            String[] likeList = likeList_bfr.split(", ");
+                                                    String[] likeList = likeList_bfr.split(", ");
 
-                                            if ( Build.VERSION.SDK_INT >= 23 &&
-                                                    ContextCompat.checkSelfPermission( getActivity().getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
-                                                ActivityCompat.requestPermissions( getActivity(), new String[] {  android.Manifest.permission.ACCESS_FINE_LOCATION  },
-                                                        0 );
-                                            }
-                                            else {
-                                                Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                                                String provider = location.getProvider();
-                                                double longitude = location.getLongitude();
-                                                double latitude = location.getLatitude();
-                                                position_get[0] = latitude;
-                                                position_get[1] = longitude;
-                                            }
-                                            User updateUser = new User(name, email, password, position_get, phoneNum, state, likeList, friendList);
-                                            retrofitClient.updateUser(email, updateUser);
-                                            Toast.makeText(getContext(), "Your information with position is stored.", Toast.LENGTH_SHORT).show();
+                                                    if (Build.VERSION.SDK_INT >= 23 &&
+                                                            ContextCompat.checkSelfPermission(getActivity().getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                                                        ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                                                                0);
+                                                    } else {
+                                                        Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                                                        String provider = location.getProvider();
+                                                        double longitude = location.getLongitude();
+                                                        double latitude = location.getLatitude();
+                                                        position_get[0] = latitude;
+                                                        position_get[1] = longitude;
+                                                    }
+                                                    final User updateUser = new User(name, email, password, position_get, phoneNum, state, likeList, friendList);
+                                                    try {
+                                                        retrofitClient.updateUser(email, updateUser).execute();
+                                                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                                            @Override
+                                                            public void run() {
+                                                                userInfo.remove(0);
+                                                                userInfo.add(updateUser);
+                                                                user_adapter.notifyDataSetChanged();
+                                                            }
+                                                        });
+                                                    } catch (IOException e) {
+                                                        e.printStackTrace();
+                                                    }
+
+                                                }
+                                            }).start();
                                         }
-                                    }).start();
+                                    });
+                                    alertDialog.show();
                                 }
                             });
-                            alertDialog.show();
                         }
-                        });
+                    });
 
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+
             }
         }).start();
 

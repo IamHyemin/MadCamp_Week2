@@ -160,9 +160,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (TextUtils.isEmpty(edt_login_email.getText().toString())) {
+                    Toast.makeText(MainActivity.this, "Please write your Email!", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if (TextUtils.isEmpty(edt_login_password.getText().toString())) {
+                    Toast.makeText(MainActivity.this, "Please write your Password!", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 final String email = edt_login_email.getText().toString();
@@ -205,6 +207,7 @@ public class MainActivity extends AppCompatActivity {
                 final View register_layout = LayoutInflater.from(MainActivity.this).inflate(R.layout.register_layout, null);
                 new MaterialStyledDialog.Builder(MainActivity.this)
                         .setTitle("Registeration")
+                        .setIcon(R.drawable.honbab_main)
                         .setDescription("Please fill all fields")
                         .setCustomView(register_layout)
                         .setNegativeText("CANCLE")
