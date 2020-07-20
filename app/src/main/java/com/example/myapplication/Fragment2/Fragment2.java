@@ -27,10 +27,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.MainActivity;
 import com.example.myapplication.R;
+
 import com.example.myapplication.Retrofit.IMyService;
 import com.example.myapplication.Retrofit.RetrofitClient;
 
 import org.w3c.dom.Text;
+import com.example.myapplication.Retrofit.MyImage;
+
 
 import java.io.File;
 import java.io.IOException;
@@ -81,6 +84,13 @@ public class Fragment2 extends Fragment {
 //                }
 //            }
 //        }).start();
+        return res;
+    }
+
+    private ArrayList<MyImage> getImagesFromStorage_2() {
+        ArrayList<MyImage> res = new ArrayList<>();
+        res.add(new MyImage( "Sambuja 부대찌개", "부대찌개 : 7000원"));
+        res.add(new MyImage("Hare", "등심돈까쓰 : 8000원 \n안심돈까쓰 : 9000원"));
         return res;
     }
 
