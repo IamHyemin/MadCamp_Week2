@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
+import com.example.myapplication.Retrofit.MyImage;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -47,6 +48,13 @@ public class Fragment2 extends Fragment {
         ArrayList<ImageInfo> res = new ArrayList<>();
         res.add(new ImageInfo(R.drawable.sambuja, "Sambuja 부대찌개", "부대찌개 : 7000원"));
         res.add(new ImageInfo(R.drawable.hare, "Hare", "등심돈까쓰 : 8000원 \n안심돈까쓰 : 9000원"));
+        return res;
+    }
+
+    private ArrayList<MyImage> getImagesFromStorage_2() {
+        ArrayList<MyImage> res = new ArrayList<>();
+        res.add(new MyImage( "Sambuja 부대찌개", "부대찌개 : 7000원"));
+        res.add(new MyImage("Hare", "등심돈까쓰 : 8000원 \n안심돈까쓰 : 9000원"));
         return res;
     }
 

@@ -3,12 +3,16 @@ package com.example.myapplication.Retrofit;
 import java.util.ArrayList;
 
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 
 public interface IMyService {
@@ -32,6 +36,12 @@ public interface IMyService {
     @PUT("/api/users/friend/{user_email}/{friend_email}")
     Call<User> updateUserFriend(@Path("user_email") String user_email, @Path("friend_email") String friend_email);
 
+    // UPLOAD (IMAGE) FILE
+    @Multipart
+    @POST("/api/files/upload")
+    Call<MyImage> uploadFile(@Part("imageFile") MultipartBody.Part filePart,
+                             @Part("title") RequestBody title,
+                             @Part("description") RequestBody description);
 
     // DELETE SINGLE USER BY EMAIL
     @DELETE("/api/users/{user_email}")
