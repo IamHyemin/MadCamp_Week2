@@ -30,6 +30,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Objects;
 
 import retrofit2.Response;
@@ -69,7 +71,7 @@ public class Fragment3 extends Fragment implements OnMapReadyCallback {
         mMap = googleMap;
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         MyLocationMarker();
-        FriendMarker();
+        //FriendMarker();
     }
 
     /////////////////////////////// 내 위치 찍기 //////////////////////////////////
@@ -83,7 +85,19 @@ public class Fragment3 extends Fragment implements OnMapReadyCallback {
                     Response<User> loginUser_res = retrofitClient.getUser(email).execute();
                     final User loginUser = loginUser_res.body();
                     final Double[] position_get = loginUser.getPosition();
+                    final String[] friendList = loginUser.getFriendsList();
                     final LatLng myLocation = new LatLng(position_get[0], position_get[1]);
+                    final ArrayList<LatLng> friendLocation = new ArrayList<LatLng>();
+                    final ArrayList<String> friendName = new ArrayList<String>();
+                    final ArrayList<String> friendState = new ArrayList<String>();
+
+                    for (String friend_email: friendList){
+                        User friend = retrofitClient.getUser(friend_email).execute().body();
+                        Double[] location  = friend.getPosition();
+                        friendLocation.add(new LatLng(location[0], location[1]));
+                        friendName.add(friend.getName());
+                        friendState.add(friend.getState());
+                    }
 
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         @Override
@@ -93,6 +107,15 @@ public class Fragment3 extends Fragment implements OnMapReadyCallback {
                                     .icon(BitmapDescriptorFactory
                                     .defaultMarker(BitmapDescriptorFactory.HUE_VIOLET))
                                     .alpha(0.5f);
+
+                            for (int i = 0; i < friendList.length; i++){
+                                MarkerOptions friendOptions = new MarkerOptions();
+                                friendOptions.position(friendLocation.get(i)).title(friendName.get(i))
+                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET))
+                                        .alpha(0.5f)
+                                        .snippet(friendState.get(i));
+                            }
+
                             mMap.addMarker(makerOptions);
 //                            mMap.setOnInfoWindowClickListener(infoWindowClickListener);
 //                            mMap.setOnMarkerClickListener(markerClickListener);
@@ -107,6 +130,7 @@ public class Fragment3 extends Fragment implements OnMapReadyCallback {
                             });
                         }
                     });
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
