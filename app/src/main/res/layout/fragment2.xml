@@ -15,8 +15,8 @@
             android:id="@+id/editSearch"
             android:layout_width="match_parent"
             android:layout_height="70dp"
-            android:hint="  Search!"
-            app:backgroundTint = "#8E4DEA"
+            android:hint="  찾는 식당을 검색하세요"
+            app:backgroundTint = "@color/colorPrimaryDark"
             />
 
         <androidx.recyclerview.widget.RecyclerView
@@ -32,6 +32,19 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0"
             />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/gallery_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:src="@drawable/ic_add_foreground"
+            android:scaleType="centerInside"
+            android:contentDescription="FAB for adding Food"
+            android:layout_margin="16dp"
+            android:backgroundTint="@color/colorPrimaryDark"
+            />
+
     </LinearLayout>
 
 </FrameLayout>

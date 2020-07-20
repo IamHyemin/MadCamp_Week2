@@ -63,24 +63,6 @@ public class Fragment1 extends Fragment {
         final LocationManager lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
 
-//        ////////////////////////////////////// 전체 user 받아오기 //////////////////////////////////
-//        Response<ArrayList<User>> allUser = null;
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                try {
-//                    Response<ArrayList<User>> allUser = retrofitClient.getAllUser().execute();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }).start();
-//
-//        if (allUser != null){
-//            ArrayList<User> allUserList = allUser.body();
-//        }
-//        //////////////////////////////////////////////////////////////////////////////////////////////////
-//
         ////////////////////////////////////// 사용자 정보 받아오기 //////////////////////////////////
         new Thread(new Runnable() {
             @Override
