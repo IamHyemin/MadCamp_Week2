@@ -15,6 +15,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,6 +56,10 @@ import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.os.Looper.getMainLooper;
 
 public class Fragment1 extends Fragment {
+
+    final ArrayList<User> userList = new ArrayList();
+    PhoneAdapter adapter_search;
+    ArrayList<User> SearchUser = new ArrayList<User>();
 
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
@@ -186,7 +192,7 @@ public class Fragment1 extends Fragment {
             }
         }).start();
 
-        //////////////////////////////////////////FAB로 update -> 수정 예정////////////////////////////////////////////////////////
+        //////////////////////////////////////////FAB로 친구 추가////////////////////////////////////////////////////////
 
         FloatingActionButton phone_fab = view.findViewById(R.id.phone_fab);
 
@@ -228,7 +234,7 @@ public class Fragment1 extends Fragment {
 
         //////////////////////////////////////// listview 누르면 친구 정보 더 보기 //////////////////////////////////////
         //for test array
-        final ArrayList<User> userList = new ArrayList();
+//        final ArrayList<User> userList = new ArrayList();
 //        userList.add(new User("Banana", "banana@naver.com", "1234"));
 //        userList.add(new User("Apple", "apple@naver.com", "12345"));
 
@@ -239,7 +245,7 @@ public class Fragment1 extends Fragment {
                     Response<User> loginUser_res = retrofitClient.getUser(email).execute();
                     final User loginUser = loginUser_res.body();
                     final String[] friendList = loginUser.getFriendsList();
-                    System.out.println("the number of friend is "+friendList.length);
+
                     for (String email_friend : friendList) {
                         User friend = retrofitClient.getUser(email_friend).execute().body();
                         System.out.println("friend is "+ friend.getName());
@@ -252,8 +258,29 @@ public class Fragment1 extends Fragment {
                         @Override
                         public void run() {
 
-                            ListView listView = view.findViewById(R.id.listView);
+                            final ListView listView = view.findViewById(R.id.listView);
                             listView.setAdapter(adapter);
+
+                            ////////////////////////////////////////// 검색 search ////////////////////////////////////////////////
+                            final EditText editSearch = view.findViewById(R.id.editSearch);
+
+                            SearchUser.addAll(userList);
+                            adapter_search = new PhoneAdapter(userList, getContext());
+                            listView.setAdapter(adapter_search);
+
+                            editSearch.addTextChangedListener(new TextWatcher() {
+                                @Override
+                                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                                }
+                                @Override
+                                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                                }
+                                @Override
+                                public void afterTextChanged(Editable editable) {
+                                    String text = editSearch.getText().toString();
+                                    search(text);
+                                }
+                            });
 
                             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                 @Override
@@ -334,26 +361,24 @@ public class Fragment1 extends Fragment {
                 }
             }
         }).start();
-
-
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         return view;
     }
 
-    public void requestLocationUpdates() {
-        if (ContextCompat.checkSelfPermission(requireContext(), ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            FusedLocationProviderClient mFusedLocationClient = new FusedLocationProviderClient(requireActivity());
-            LocationRequest mLocationRequest = new LocationRequest();
-            mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-            LocationCallback mLocationCallback = new LocationCallback() {
-                @Override
-                public void onLocationResult(LocationResult locationResult) {
-                    super.onLocationResult(locationResult);
-                    LatLng a = new LatLng(locationResult.getLastLocation().getLatitude(), locationResult.getLastLocation().getLongitude());
+    public void search(String charText) {
+        userList.clear();
+        if (charText.length() == 0) {
+            userList.addAll(SearchUser);
+        } else {
+            for (int i = 0; i < SearchUser.size(); i++) {
+                if (SearchUser.get(i).getName().toLowerCase().contains(charText.toLowerCase())) {
+                    userList.add(SearchUser.get(i));
                 }
-        };
+            }
         }
+        adapter_search.notifyDataSetChanged();
     }
+
 
 }

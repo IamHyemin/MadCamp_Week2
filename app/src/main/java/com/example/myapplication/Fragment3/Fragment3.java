@@ -139,50 +139,5 @@ public class Fragment3 extends Fragment implements OnMapReadyCallback {
         }).start();
         }
 
-    ////////////////////////  친구 위치 찍기 //////////////////////////
-    public void FriendMarker() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Intent intent = Objects.requireNonNull(getActivity()).getIntent();
-                    final String email = Objects.requireNonNull(intent.getExtras()).getString("email");
-                    Response<User> loginUser_res = retrofitClient.getUser(email).execute();
-                    final User loginUser = loginUser_res.body();
-                    final String[] friendList = loginUser.getFriendsList();
-
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    for (String friend_email : friendList) {
-                                        User friend = null;
-                                        try {
-                                            friend = retrofitClient.getUser(friend_email).execute().body();
-                                            MarkerOptions makerOptions = new MarkerOptions();
-                                            makerOptions
-                                                    .position(new LatLng(friend.getPosition()[0], friend.getPosition()[1]))
-                                                    .title(friend.getName())
-                                                    .snippet(friend.getState())
-                                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-                                                    .alpha(0.5f);
-                                            mMap.addMarker(makerOptions);
-                                        } catch (IOException e) {
-                                            e.printStackTrace();
-                                        }
-
-                                    }
-                                }
-                            });
-                        }
-                    }).start();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-    }
 
 }

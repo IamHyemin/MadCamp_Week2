@@ -16,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:hint="  찾는 식당을 검색하세요"
-            app:backgroundTint = "@color/colorPrimaryDark"
+            app:backgroundTint = "@color/md_divider_white"
             />
 
         <androidx.recyclerview.widget.RecyclerView
