@@ -49,7 +49,7 @@ public class Fragment1 extends Fragment {
         ((AppCompatActivity)getActivity()).getSupportActionBar().setLogo(R.drawable.honbab_main);
         ////////////////////////////////////////////////////////////////////////////////////////
 
-        View view = inflater.inflate(R.layout.fragment1, container, false);
+        final View view = inflater.inflate(R.layout.fragment1, container, false);
         Intent intent = getActivity().getIntent();
 
         final String email = Objects.requireNonNull(intent.getExtras()).getString("email");
@@ -73,22 +73,82 @@ public class Fragment1 extends Fragment {
 //        }
 //        //////////////////////////////////////////////////////////////////////////////////////////////////
 //
-//        ////////////////////////////////////// 사용자 정보 받아오기 //////////////////////////////////
-//        Response<User> loginUser_res = null;
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                try {
-//                    Response<User> loginUser_res = retrofitClient.getUser(email).execute();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }).start();
-//
-//
-//        final User loginUser = loginUser_res.body();
-//        String[] friendlist = loginUser.getFriendsList();
+        ////////////////////////////////////// 사용자 정보 받아오기 //////////////////////////////////
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Response<User> loginUser_res = retrofitClient.getUser(email).execute();
+                    final User loginUser = loginUser_res.body();
+                    final String[] friendList = loginUser.getFriendsList();
+                    final String name = loginUser.getName();
+                    final String phoneNum = loginUser.getPhoneNum();
+                    final String email = loginUser.getEmail();
+                    final String password = loginUser.getPassword();
+                    final String state = loginUser.getState();
+                    final String[] likeList = loginUser.getLikeList();
+                    final Double[] position_get = loginUser.getPosition();
+
+                    ArrayList userInfo = new ArrayList();
+                    userInfo.add(loginUser);
+                    PhoneAdapter user_adapter = new PhoneAdapter(userInfo, getContext());
+                    ListView listView = view.findViewById(R.id.listView_user);
+                    listView.setAdapter(user_adapter);
+
+                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView parent, View v, final int position, long id) {
+                            View User = inflater.inflate(R.layout.user_detail, container, false);
+                            AlertDialog.Builder alertDialog =  new AlertDialog.Builder(getContext());;
+                            TextView nameView = User.findViewById(R.id.user_name);
+                            TextView emailView = User.findViewById(R.id.user_email);
+                            final EditText passwordView = User.findViewById(R.id.user_password);
+                            final EditText phoneView = User.findViewById(R.id.user_phone);
+                            final EditText stateView = User.findViewById(R.id.user_state);
+                            final EditText likeView = User.findViewById(R.id.user_likeList);
+
+                            alertDialog.setView(User);
+                            nameView.setText(name);
+                            emailView.setText(email);
+                            passwordView.setText(password);
+                            phoneView.setText(phoneNum);
+                            stateView.setText(state);
+                            String likeprint1 = "";
+                            for (String elt: likeList){
+                                likeprint1 = elt+" ";
+                            }
+                            likeView.setText(likeprint1);
+
+                            alertDialog.setPositiveButton("UPDATE", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    new Thread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            final String password = passwordView.getText().toString();
+                                            final String phoneNum = phoneView.getText().toString();
+                                            final String state = stateView.getText().toString();
+                                            final String likeList_bfr = likeView.getText().toString();
+
+                                            String[] likeList = likeList_bfr.split(", ");
+
+                                            User updateUser = new User(name, email, password, position_get, phoneNum, state, likeList, friendList);
+                                            retrofitClient.updateUser(email, updateUser);
+                                        }
+                                    }).start();
+                                }
+                            });
+                            alertDialog.show();
+                        }
+                        });
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
+
 
 
         //////////////////////////////////////////FAB로 update -> 수정 예정////////////////////////////////////////////////////////

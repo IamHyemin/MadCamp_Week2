@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
@@ -167,35 +168,33 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
                 final String email = edt_login_email.getText().toString();
-                String password = edt_login_password.getText().toString();
+                final String password = edt_login_password.getText().toString();
                 final String[] realpassword = {""};
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
                         Call<User> tryUser = retrofitClient.getUser(email);
-                        try {
-                            realpassword[0] = Objects.requireNonNull(tryUser.execute().body()).getPassword();
-                            System.out.println(">>>>>>>>>>>>>>>>>>"+realpassword[0]);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                            try {
+                                realpassword[0] = Objects.requireNonNull(tryUser.execute().body()).getPassword();
+                                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (realpassword[0].equals(password)) {
+                                            Intent i = new Intent(getApplicationContext(), LoginAfter.class);
+                                            i.putExtra("email", email);
+                                            startActivity(i);
+                                            finish();
+                                        } else {
+                                            Toast.makeText(MainActivity.this, "Wrong Password or Email", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                     }
                 }).start();
 
-                ///////////////////////////////로그인 시 1234=1234여도 false 반환 이유 모름////////////////////////
-
-                ///////일단 로그인을 위해/////
-                Intent i = new Intent(getApplicationContext(), LoginAfter.class);
-                i.putExtra("email", email);
-                startActivity(i);
-                finish();
-//                if (realpassword[0].equals(password)) {
-//                    System.out.println("혜민4");
-//                    Intent i = new Intent(getApplicationContext(), LoginAfter.class);
-//                    i.putExtra("email", email);
-//                    startActivity(i);
-//                    finish();
-//                }
             }
         //////////////////////////////////////////////////////////////
     });

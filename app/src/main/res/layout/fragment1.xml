@@ -18,6 +18,22 @@
             android:hint="  Search the User!"
             app:backgroundTint = "#EAE6EC"
             />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text= "   Your Information"/>
+
+        <ListView
+            android:id="@+id/listView_user"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text= "   Friend Information"/>
 
         <ListView
             android:id="@+id/listView"

@@ -26,6 +26,17 @@ public class User {
         this.likeList = likeList;
     }
 
+    public User(String name, String email, String password,  Double[] position, String phoneNum, String state, String[] likeList, String[] friendsList ){
+        this.name = name;
+        this.email = email;
+        this.position = position;
+        this.friendsList = friendsList;
+        this.password = password;
+        this.phoneNum = phoneNum;
+        this.state = state;
+        this.likeList = likeList;
+    }
+
     public String getName(){ return name; }
     public String getPhoneNum(){ return phoneNum; }
     public String getEmail(){ return email; }
