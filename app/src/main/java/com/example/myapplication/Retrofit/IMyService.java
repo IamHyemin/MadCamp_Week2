@@ -1,10 +1,13 @@
 package com.example.myapplication.Retrofit;
 
+import com.google.gson.JsonObject;
+
 import java.util.ArrayList;
 
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
@@ -47,15 +50,14 @@ public interface IMyService {
     @DELETE("/api/users/{user_email}")
     Call<User> deleteUser(@Path("user_email") String user_email);
 
-    //    @POST("register")
-//    @FormUrlEncoded
-//    Observable<String> registerUser(@Field("email") String email,
-//                                    @Field("name") String name,
-//                                    @Field("phoneNum") String phoneNum,
-//                                    @Field("password") String password);
-//    @POST("login")
-//    @FormUrlEncoded
-//    Observable<String> loginUser(@Field("email") String email,
-//                                    @Field("password") String password);
+    // CREATE USER
+    @POST("/api/files/upload")
+    Call<JsonObject> createFile(@Body File file);
+
+    //GET ALL FILE
+    @GET("/api/files")
+    Call<ArrayList<ResponseBody>> getAllFile();
+
+
 
 }

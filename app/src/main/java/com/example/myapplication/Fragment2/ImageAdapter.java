@@ -1,6 +1,8 @@
 package com.example.myapplication.Fragment2;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,8 +17,17 @@ import androidx.recyclerview.widget.RecyclerView.Adapter;
 
 import com.bumptech.glide.Glide;
 import com.example.myapplication.R;
+import com.example.myapplication.Retrofit.IMyService;
+import com.example.myapplication.Retrofit.RetrofitClient;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.CustomViewHolder> {
 
@@ -43,7 +54,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.CustomViewHo
             System.out.println("context is null >>>>>>>>>>>");
         }
 
-        final Integer image = mData.get(position).getImage();
+        final Bitmap image = mData.get(position).getImage();
         final String title = mData.get(position).getImageTitle();
         final String menu = mData.get(position).getImageMenu();
         Glide.with(mContext).load(image).into(holder.image);
