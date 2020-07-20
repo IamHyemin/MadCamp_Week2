@@ -63,6 +63,7 @@ public class Fragment1 extends Fragment {
 
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
+
         ////////////////////////////////// action bar /////////////////////////////////////////
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayUseLogoEnabled(true);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -259,14 +260,13 @@ public class Fragment1 extends Fragment {
                         public void run() {
 
                             final ListView listView = view.findViewById(R.id.listView);
-                            listView.setAdapter(adapter);
+//                            listView.setAdapter(adapter);
 
                             ////////////////////////////////////////// 검색 search ////////////////////////////////////////////////
                             final EditText editSearch = view.findViewById(R.id.editSearch);
 
                             SearchUser.addAll(userList);
-                            adapter_search = new PhoneAdapter(userList, getContext());
-                            listView.setAdapter(adapter_search);
+                            listView.setAdapter(adapter);
 
                             editSearch.addTextChangedListener(new TextWatcher() {
                                 @Override
@@ -278,7 +278,17 @@ public class Fragment1 extends Fragment {
                                 @Override
                                 public void afterTextChanged(Editable editable) {
                                     String text = editSearch.getText().toString();
-                                    search(text);
+                                    userList.clear();
+                                    if (text.length() == 0) {
+                                        userList.addAll(SearchUser);
+                                    } else {
+                                        for (int i = 0; i < SearchUser.size(); i++) {
+                                            if (SearchUser.get(i).getName().toLowerCase().contains(text.toLowerCase())) {
+                                                userList.add(SearchUser.get(i));
+                                            }
+                                        }
+                                    }
+                                    adapter.notifyDataSetChanged();
                                 }
                             });
 
@@ -365,20 +375,6 @@ public class Fragment1 extends Fragment {
 
         return view;
     }
-
-    public void search(String charText) {
-        userList.clear();
-        if (charText.length() == 0) {
-            userList.addAll(SearchUser);
-        } else {
-            for (int i = 0; i < SearchUser.size(); i++) {
-                if (SearchUser.get(i).getName().toLowerCase().contains(charText.toLowerCase())) {
-                    userList.add(SearchUser.get(i));
-                }
-            }
-        }
-        adapter_search.notifyDataSetChanged();
-    }
-
+    
 
 }
