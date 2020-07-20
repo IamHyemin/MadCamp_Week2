@@ -248,7 +248,6 @@ public class Fragment1 extends Fragment {
                     Response<User> loginUser_res = retrofitClient.getUser(email).execute();
                     final User loginUser = loginUser_res.body();
                     final String[] friendList = loginUser.getFriendsList();
-
                     for (String email_friend : friendList) {
                         User friend = retrofitClient.getUser(email_friend).execute().body();
                         System.out.println("friend is "+ friend.getName());
