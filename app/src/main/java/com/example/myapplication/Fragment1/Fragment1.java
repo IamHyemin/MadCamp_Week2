@@ -15,6 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +36,11 @@ import com.example.myapplication.R;
 import com.example.myapplication.Retrofit.IMyService;
 import com.example.myapplication.Retrofit.RetrofitClient;
 import com.example.myapplication.Retrofit.User;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.IOException;
@@ -43,6 +49,9 @@ import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Response;
+
+import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
+import static android.os.Looper.getMainLooper;
 
 public class Fragment1 extends Fragment {
 
@@ -78,10 +87,10 @@ public class Fragment1 extends Fragment {
                     final String state = loginUser.getState();
                     final String[] likeList = loginUser.getLikeList();
                     final Double[] position_get = loginUser.getPosition();
-                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    new Handler(getMainLooper()).post(new Runnable() {
                         @Override
                         public void run() {
-                            final ArrayList userInfo = new ArrayList();
+                            final ArrayList<User> userInfo = new ArrayList<User>();
                             userInfo.add(loginUser);
                             final PhoneAdapter user_adapter = new PhoneAdapter(userInfo, getContext());
                             ListView listView = view.findViewById(R.id.listView_user);
@@ -123,34 +132,42 @@ public class Fragment1 extends Fragment {
                                                     final String state = stateView.getText().toString();
                                                     final String likeList_bfr = likeView.getText().toString();
 
-                                                    String[] likeList = likeList_bfr.split(", ");
+                                                    final String[] likeList = likeList_bfr.split(", ");
+                                                    new Handler(getMainLooper()).post(new Runnable() {
+                                                                                          @Override
+                                                                                          public void run() {
 
-                                                    if (Build.VERSION.SDK_INT >= 23 &&
-                                                            ContextCompat.checkSelfPermission(getActivity().getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                                                        ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                                                                0);
-                                                    } else {
-                                                        Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                                                        String provider = location.getProvider();
-                                                        double longitude = location.getLongitude();
-                                                        double latitude = location.getLatitude();
-                                                        position_get[0] = latitude;
-                                                        position_get[1] = longitude;
-                                                    }
-                                                    final User updateUser = new User(name, email, password, position_get, phoneNum, state, likeList, friendList);
-                                                    try {
-                                                        retrofitClient.updateUser(email, updateUser).execute();
-                                                        new Handler(Looper.getMainLooper()).post(new Runnable() {
-                                                            @Override
-                                                            public void run() {
-                                                                userInfo.remove(0);
-                                                                userInfo.add(updateUser);
-                                                                user_adapter.notifyDataSetChanged();
-                                                            }
-                                                        });
-                                                    } catch (IOException e) {
-                                                        e.printStackTrace();
-                                                    }
+                                                                                              if ((ContextCompat.checkSelfPermission(Objects.requireNonNull(getActivity()).getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) &&
+                                                                                                      (ContextCompat.checkSelfPermission(Objects.requireNonNull(getActivity()).getApplicationContext(), ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)) {
+                                                                                                  ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION}, 0);
+                                                                                              }
+                                                                                              GpsTracker gpsTracker = new GpsTracker(getContext());
+                                                                                              double latitude = gpsTracker.getLatitude();
+                                                                                              double longitude = gpsTracker.getLongitude();
+                                                                                              position_get[0] = latitude;
+                                                                                              position_get[1] = longitude;
+                                                                                              System.out.println("the position is :" + latitude + " and " + longitude);
+                                                                                              final User updateUser = new User(name, email, password, position_get, phoneNum, state, likeList, friendList);
+                                                                                              new Thread(new Runnable() {
+                                                                                                  @Override
+                                                                                                  public void run() {
+                                                                                                      try {
+                                                                                                          retrofitClient.updateUser(email, updateUser).execute();
+                                                                                                          new Handler(getMainLooper()).post(new Runnable() {
+                                                                                                              @Override
+                                                                                                              public void run() {
+                                                                                                                  userInfo.remove(0);
+                                                                                                                  userInfo.add(updateUser);
+                                                                                                                  user_adapter.notifyDataSetChanged();
+                                                                                                              }
+                                                                                                          });
+                                                                                                      } catch (IOException ex) {
+                                                                                                          ex.printStackTrace();
+                                                                                                      }
+                                                                                                  }
+                                                                                              }).start();
+                                                                                          }
+                                                                                      });
 
                                                 }
                                             }).start();
@@ -231,7 +248,7 @@ public class Fragment1 extends Fragment {
 
                     final PhoneAdapter adapter = new PhoneAdapter(userList, getContext());
 
-                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    new Handler(getMainLooper()).post(new Runnable() {
                         @Override
                         public void run() {
 
@@ -324,6 +341,19 @@ public class Fragment1 extends Fragment {
         return view;
     }
 
-
+    public void requestLocationUpdates() {
+        if (ContextCompat.checkSelfPermission(requireContext(), ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            FusedLocationProviderClient mFusedLocationClient = new FusedLocationProviderClient(requireActivity());
+            LocationRequest mLocationRequest = new LocationRequest();
+            mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+            LocationCallback mLocationCallback = new LocationCallback() {
+                @Override
+                public void onLocationResult(LocationResult locationResult) {
+                    super.onLocationResult(locationResult);
+                    LatLng a = new LatLng(locationResult.getLastLocation().getLatitude(), locationResult.getLastLocation().getLongitude());
+                }
+        };
+        }
+    }
 
 }

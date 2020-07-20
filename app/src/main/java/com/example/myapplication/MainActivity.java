@@ -58,28 +58,6 @@ public class MainActivity extends AppCompatActivity {
     Button btn_login;
     TextView txt_create_account;
 
-    //////////////////////////////// for action bar //////////////////////////////////////
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.action_bar, menu);
-        return true;
-    }
-
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle presses on the action bar items
-        switch (item.getItemId()) {
-            case R.id.logout:
-                logout();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    private void logout() {
-        com.facebook.login.LoginManager.getInstance().logOut();
-    }
-
     /////////////////////////////////////////////////////////////////////////////////////////
 
     @Override

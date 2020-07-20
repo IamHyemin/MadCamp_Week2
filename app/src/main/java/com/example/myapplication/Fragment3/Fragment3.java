@@ -111,9 +111,10 @@ public class Fragment3 extends Fragment implements OnMapReadyCallback {
                             for (int i = 0; i < friendList.length; i++){
                                 MarkerOptions friendOptions = new MarkerOptions();
                                 friendOptions.position(friendLocation.get(i)).title(friendName.get(i))
-                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET))
+                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
                                         .alpha(0.5f)
                                         .snippet(friendState.get(i));
+                                mMap.addMarker(friendOptions);
                             }
 
                             mMap.addMarker(makerOptions);
