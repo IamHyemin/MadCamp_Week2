@@ -9,6 +9,8 @@ import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -38,6 +40,10 @@ import retrofit2.Response;
 
 public class Fragment3 extends Fragment implements OnMapReadyCallback {
 
+    final ArrayList<LatLng> friendLocation = new ArrayList<LatLng>();
+    final ArrayList<String> friendName = new ArrayList<String>();
+    final ArrayList<String> friendState = new ArrayList<String>();
+
     GoogleMap mMap;
     final IMyService retrofitClient = RetrofitClient.getApiService();
 
@@ -63,15 +69,36 @@ public class Fragment3 extends Fragment implements OnMapReadyCallback {
         ////////////////////////////////////////// for make map ////////////////////////////////////////////////////////
         SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        ImageButton btn_search = v.findViewById(R.id.ic_search);
+        final EditText search = v.findViewById(R.id.position_search);
+        btn_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                findTheUser(search.getText().toString());
+            }
+        });
+
         return v;
     }
+
+    private void findTheUser(String toString) {
+        for (int i = 0; i< friendName.size(); i++){
+            System.out.println(friendName.get(i));
+            if (friendName.get(i).toLowerCase().contains(toString.toLowerCase())){
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(friendLocation.get(i)));
+                return;
+            }
+        }
+        Toast.makeText(getActivity(),toString+" does not your friend",Toast.LENGTH_SHORT).show();
+    }
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         MyLocationMarker();
-        //FriendMarker();
     }
 
     /////////////////////////////// 내 위치 찍기 //////////////////////////////////
@@ -87,9 +114,7 @@ public class Fragment3 extends Fragment implements OnMapReadyCallback {
                     final Double[] position_get = loginUser.getPosition();
                     final String[] friendList = loginUser.getFriendsList();
                     final LatLng myLocation = new LatLng(position_get[0], position_get[1]);
-                    final ArrayList<LatLng> friendLocation = new ArrayList<LatLng>();
-                    final ArrayList<String> friendName = new ArrayList<String>();
-                    final ArrayList<String> friendState = new ArrayList<String>();
+
 
                     for (String friend_email: friendList){
                         User friend = retrofitClient.getUser(friend_email).execute().body();
