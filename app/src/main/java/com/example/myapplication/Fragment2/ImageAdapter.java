@@ -27,7 +27,7 @@ import androidx.recyclerview.widget.RecyclerView.Adapter;
 import com.bumptech.glide.Glide;
 import com.example.myapplication.LoginAfter;
 import com.example.myapplication.R;
-import com.example.myapplication.Retrofit.File;
+import com.example.myapplication.Retrofit.myFile;
 import com.example.myapplication.Retrofit.IMyService;
 import com.example.myapplication.Retrofit.Restaurant;
 import com.example.myapplication.Retrofit.RetrofitClient;
@@ -243,7 +243,7 @@ public class ImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
                             final String targetSaveFileName = target.image;
                             final String inputDescription = editText_description.getText().toString();
-                            final File updateContent = new File(inputDescription); // updateContent 에는 description 만 담겨있음
+                            final myFile updateContent = new myFile(inputDescription); // updateContent 에는 description 만 담겨있음
 
                             // 서버와 통신하는 부분 (update Description)
                             new Thread(new Runnable() {

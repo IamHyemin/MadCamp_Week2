@@ -24,7 +24,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.myapplication.R;
 
-import com.example.myapplication.Retrofit.File;
+import com.example.myapplication.Retrofit.myFile;
 import com.example.myapplication.Retrofit.IMyService;
 import com.example.myapplication.Retrofit.RetrofitClient;
 
@@ -67,8 +67,8 @@ public class Fragment2 extends Fragment {
             @Override
             public void run() {
                 try {
-                    ArrayList<File> loginUser_res = retrofitClient.getAllFile().execute().body();
-                    for (File elt : loginUser_res){
+                    ArrayList<myFile> loginUser_res = retrofitClient.getAllFile().execute().body();
+                    for (myFile elt : loginUser_res){
                         res.add(new ImageInfo(elt.getSaveFileName(), elt.getTitle(), elt.getDescription()));
                     }
                 } catch (IOException e) {
@@ -86,8 +86,8 @@ public class Fragment2 extends Fragment {
             @Override
             public void run() {
                 try {
-                    ArrayList<File> loginUser_res = retrofitClient.getAllFile().execute().body();
-                    for (File elt : loginUser_res){
+                    ArrayList<myFile> loginUser_res = retrofitClient.getAllFile().execute().body();
+                    for (myFile elt : loginUser_res){
                         res.add(new ImageInfo(elt.getSaveFileName(), elt.getTitle(), elt.getDescription()));
                     }
                     new Handler(getMainLooper()).post(new Runnable() {
