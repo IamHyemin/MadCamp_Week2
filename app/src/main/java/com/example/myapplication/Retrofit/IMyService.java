@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import okhttp3.MultipartBody;
 
+import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 
@@ -20,6 +21,7 @@ import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface IMyService {
 
@@ -54,11 +56,11 @@ public interface IMyService {
 
     // [ABOUT LIKE LIST]
     // UPDATE THE USER - add to like list
-    @PUT("/api/users/likeList/:user_email")
+    @PUT("/api/users/likeList/{user_email}")
     Call<User> addToLikeList(@Path("user_email") String user_email, @Body Restaurant restaurant);
 
     // UPDATE THE USER - delete in like list
-    @DELETE("/api/users/likeList/:user_email")
+    @DELETE("/api/users/likeList/{user_email}")
     Call<User> deleteInLikeList(@Path("user_email") String user_email, @Body Restaurant restaurant);
 
     // -------------------------------[FILE API]-------------------------------
@@ -66,21 +68,21 @@ public interface IMyService {
     // UPLOAD (IMAGE) FILE
     @Multipart
     @POST("/api/files/upload")
-    Call<MyImage> uploadFile(@Part("imageFile") MultipartBody.Part filePart,
+    Call<myFile> uploadFile(@Part MultipartBody.Part filePart,
                              @Part("title") RequestBody title,
                              @Part("description") RequestBody description);
 
     // GET ALL FILE
     @GET("/api/files")
-    Call<ArrayList<File>> getAllFile();
+    Call<ArrayList<myFile>> getAllFile();
 
     // UPDATE DESCRIPTION OF A SINGLE FILE
     @PUT("/api/files/{saveFileName}")
-    Call<File> updateDescription(@Path("saveFileName") String saveFileName, @Body File file);
+    Call<myFile> updateDescription(@Path("saveFileName") String saveFileName, @Body myFile file);
 
     // DELETE THE FILE
     @DELETE("api/files/{saveFileName}")
-    Call<File> deleteFile(@Path("saveFileName") String saveFileName);
+    Call<myFile> deleteFile(@Path("saveFileName") String saveFileName);
 
 
 }

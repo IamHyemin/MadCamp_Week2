@@ -33,6 +33,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.myapplication.MainActivity;
 import com.example.myapplication.R;
@@ -58,12 +59,13 @@ import static android.os.Looper.getMainLooper;
 
 public class Fragment1 extends Fragment {
 
-
+    private SwipeRefreshLayout swipeRefreshLayout;
     PhoneAdapter adapter_search;
+    PhoneAdapter adapter;
     ArrayList<User> SearchUser = new ArrayList<User>();
 
     @Override
-    public View onCreateView(final LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
         final ArrayList<User> userList = new ArrayList();
         //////////////////////////////// action bar /////////////////////////////////////////
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayUseLogoEnabled(true);
@@ -79,6 +81,38 @@ public class Fragment1 extends Fragment {
         final String email = Objects.requireNonNull(intent.getExtras()).getString("email");
         final IMyService retrofitClient = RetrofitClient.getApiService();
 
+        // ---------------------------------[당겨서 새로고침 기능 추가]---------------------------------
+        swipeRefreshLayout = view.findViewById(R.id.refresh_layout_fragment1);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // 서버에서 데이터들 다시 불러와야 됨
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Response<User> loginUser_res = retrofitClient.getUser(email).execute();
+                            userList.clear();
+                            final User loginUser = loginUser_res.body();
+                            assert loginUser != null;
+                            final String[] friendList = loginUser.getFriendsList();
+                            for (String email_friend : friendList) {
+                                User friend = retrofitClient.getUser(email_friend).execute().body();
+                                userList.add(friend);
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
+                adapter.notifyDataSetChanged();
+//                reloadUserInfos();
+
+                // 새로고침 완료시,
+                // 새로고침 아이콘이 사라질 수 있게 isRefreshing = false
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
 
         ////////////////////////////////////// 사용자 정보 받아오기 //////////////////////////////////
         new Thread(new Runnable() {
@@ -125,8 +159,19 @@ public class Fragment1 extends Fragment {
                                     phoneView.setText(phoneNum);
                                     stateView.setText(state);
                                     String likeprint1 = "";
-                                    for (String elt : likeList) {
-                                        likeprint1 = elt + " ";
+
+                                    if (likeList.length <= 1){
+                                        for (String elt : likeList){
+                                            likeprint1 = elt;
+                                        }
+                                    }else {
+                                        for (int i = 0; i < likeList.length; i++) {
+                                            if (i == likeList.length -1) {
+                                                likeprint1 = likeprint1+ "" + likeList[i];
+                                            }else {
+                                                likeprint1 = likeprint1 + likeList[i] + ", ";
+                                            }
+                                        }
                                     }
                                     likeView.setText(likeprint1);
 
@@ -140,43 +185,42 @@ public class Fragment1 extends Fragment {
                                                     final String phoneNum = phoneView.getText().toString();
                                                     final String state = stateView.getText().toString();
                                                     final String likeList_bfr = likeView.getText().toString();
-
                                                     final String[] likeList = likeList_bfr.split(", ");
                                                     new Handler(getMainLooper()).post(new Runnable() {
-                                                                                          @Override
-                                                                                          public void run() {
+                                                          @Override
+                                                          public void run() {
 
-                                                                                              if ((ContextCompat.checkSelfPermission(Objects.requireNonNull(getActivity()).getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) &&
-                                                                                                      (ContextCompat.checkSelfPermission(Objects.requireNonNull(getActivity()).getApplicationContext(), ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)) {
-                                                                                                  ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION}, 0);
-                                                                                              }
-                                                                                              GpsTracker gpsTracker = new GpsTracker(getContext());
-                                                                                              double latitude = gpsTracker.getLatitude();
-                                                                                              double longitude = gpsTracker.getLongitude();
-                                                                                              position_get[0] = latitude;
-                                                                                              position_get[1] = longitude;
-                                                                                              System.out.println("the position is :" + latitude + " and " + longitude);
-                                                                                              final User updateUser = new User(name, email, password, position_get, phoneNum, state, likeList, friendList);
-                                                                                              new Thread(new Runnable() {
-                                                                                                  @Override
-                                                                                                  public void run() {
-                                                                                                      try {
-                                                                                                          retrofitClient.updateUser(email, updateUser).execute();
-                                                                                                          new Handler(getMainLooper()).post(new Runnable() {
-                                                                                                              @Override
-                                                                                                              public void run() {
-                                                                                                                  userInfo.remove(0);
-                                                                                                                  userInfo.add(updateUser);
-                                                                                                                  user_adapter.notifyDataSetChanged();
-                                                                                                              }
-                                                                                                          });
-                                                                                                      } catch (IOException ex) {
-                                                                                                          ex.printStackTrace();
-                                                                                                      }
-                                                                                                  }
-                                                                                              }).start();
-                                                                                          }
-                                                                                      });
+                                                              if ((ContextCompat.checkSelfPermission(Objects.requireNonNull(getActivity()).getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) &&
+                                                                      (ContextCompat.checkSelfPermission(Objects.requireNonNull(getActivity()).getApplicationContext(), ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)) {
+                                                                  ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION}, 0);
+                                                              }
+                                                              GpsTracker gpsTracker = new GpsTracker(getContext());
+                                                              double latitude = gpsTracker.getLatitude();
+                                                              double longitude = gpsTracker.getLongitude();
+                                                              position_get[0] = latitude;
+                                                              position_get[1] = longitude;
+                                                              System.out.println("the position is :" + latitude + " and " + longitude);
+                                                              final User updateUser = new User(name, email, password, position_get, phoneNum, state, likeList, friendList);
+                                                              new Thread(new Runnable() {
+                                                                  @Override
+                                                                  public void run() {
+                                                                      try {
+                                                                          retrofitClient.updateUser(email, updateUser).execute();
+                                                                          new Handler(getMainLooper()).post(new Runnable() {
+                                                                              @Override
+                                                                              public void run() {
+                                                                                  userInfo.remove(0);
+                                                                                  userInfo.add(updateUser);
+                                                                                  user_adapter.notifyDataSetChanged();
+                                                                              }
+                                                                          });
+                                                                      } catch (IOException ex) {
+                                                                          ex.printStackTrace();
+                                                                      }
+                                                                  }
+                                                              }).start();
+                                                          }
+                                                      });
 
                                                 }
                                             }).start();
@@ -194,6 +238,8 @@ public class Fragment1 extends Fragment {
 
             }
         }).start();
+
+
 
         //////////////////////////////////////////FAB로 친구 추가////////////////////////////////////////////////////////
 
@@ -251,8 +297,6 @@ public class Fragment1 extends Fragment {
                     final String[] friendList = loginUser.getFriendsList();
                     for (String email_friend : friendList) {
                         User friend = retrofitClient.getUser(email_friend).execute().body();
-                        assert friend != null;
-                        System.out.println("friend is "+ friend.getName());
                         userList.add(friend);
                     }
 
@@ -260,7 +304,7 @@ public class Fragment1 extends Fragment {
                         @Override
                         public void run() {
 
-                            final PhoneAdapter adapter = new PhoneAdapter(userList, getContext());
+                            adapter = new PhoneAdapter(userList, getContext());
                             final ListView listView = view.findViewById(R.id.listView);
 //                            listView.setAdapter(adapter);
 
@@ -294,6 +338,31 @@ public class Fragment1 extends Fragment {
                                 }
                             });
 
+                            /////////////////////////////////////////////// 버튼 누르면 친구찾는 상태만 /////////////////////////////////////
+                            final ImageButton btn_search = view.findViewById(R.id.ic_search_st);
+                            btn_search.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    String text = "want to find friends";
+                                    userList.clear();
+                                    for (int i = 0; i < SearchUser.size(); i++) {
+                                        if (SearchUser.get(i).getState().toLowerCase().contains(text.toLowerCase())) {
+                                            userList.add(SearchUser.get(i));
+                                        }
+                                    }
+                                    Toast.makeText(getContext(), "밥 먹을 친구를 찾는 친구들입니다.", Toast.LENGTH_SHORT).show();
+                                    adapter.notifyDataSetChanged();
+                                    btn_search.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            userList.clear();
+                                            userList.addAll(SearchUser);
+                                            adapter.notifyDataSetChanged();
+                                        }
+                                    });
+                                }
+                            });
+                            ///////////////////////////////////////////////////////// 아이템 보여주기 /////////////////////////////////////
                             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                 @Override
                                 public void onItemClick(AdapterView parent, View v, int position, long id) {
@@ -320,7 +389,7 @@ public class Fragment1 extends Fragment {
 
                                     String printfood = "";
                                     for (String elt : food) {
-                                        printfood += elt + ", ";
+                                        printfood += elt + " ";
                                     }
                                     likeView.setText(printfood);
 
@@ -378,5 +447,11 @@ public class Fragment1 extends Fragment {
         return view;
     }
 
+    // refresh할 때 호출할 함수 - DB로부터 다시 유저 정보를 받아오고 어댑터에 담긴 친구 목록을 갱신해야 함.
+    private void reloadUserInfos() {
+        // TODO: 여기 채우기
+
+
+    }
 
 }

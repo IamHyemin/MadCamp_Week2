@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.myapplication.Fragment1.Fragment1;
 import com.example.myapplication.R;
@@ -40,9 +41,13 @@ import retrofit2.Response;
 
 public class Fragment3 extends Fragment implements OnMapReadyCallback {
 
+    private SwipeRefreshLayout swipeRefreshLayout;
+
     final ArrayList<LatLng> friendLocation = new ArrayList<LatLng>();
     final ArrayList<String> friendName = new ArrayList<String>();
     final ArrayList<String> friendState = new ArrayList<String>();
+    final ArrayList <MarkerOptions> MarkerArray = new ArrayList<>();
+
 
     GoogleMap mMap;
     final IMyService retrofitClient = RetrofitClient.getApiService();
@@ -50,14 +55,6 @@ public class Fragment3 extends Fragment implements OnMapReadyCallback {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        Intent intent = Objects.requireNonNull(getActivity()).getIntent();
-        final String email = Objects.requireNonNull(intent.getExtras()).getString("email");
-
         //////////////////////////////////// action bar //////////////////////////////////
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayUseLogoEnabled(true);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -66,12 +63,20 @@ public class Fragment3 extends Fragment implements OnMapReadyCallback {
         ((AppCompatActivity) getActivity()).getSupportActionBar().setElevation(0);
         //////////////////////////////////////////////////////////////////////////////////
 
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        Intent intent = Objects.requireNonNull(getActivity()).getIntent();
+        final String email = Objects.requireNonNull(intent.getExtras()).getString("email");
         final View v = inflater.inflate(R.layout.fragment3, null, false);
 
         ////////////////////////////////////////// for make map ////////////////////////////////////////////////////////
         SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        ////////////////////////////////////////////// 사람 찾기 ////////////////////////////////////////////////
         ImageButton btn_search = v.findViewById(R.id.ic_search);
         final EditText search = v.findViewById(R.id.position_search);
         btn_search.setOnClickListener(new View.OnClickListener() {
@@ -81,20 +86,33 @@ public class Fragment3 extends Fragment implements OnMapReadyCallback {
             }
         });
 
+        // ---------------------------------[당겨서 새로고침 기능 추가]---------------------------------
+        swipeRefreshLayout = v.findViewById(R.id.refresh_layout_fragment3);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // 서버에서 데이터들 다시 불러와야 됨
+                reloadData();
+                // 새로고침 완료시,
+                // 새로고침 아이콘이 사라질 수 있게 isRefreshing = false
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
         return v;
     }
 
     private void findTheUser(String toString) {
-        for (int i = 0; i< friendName.size(); i++){
-            System.out.println(friendName.get(i));
-            if (friendName.get(i).toLowerCase().contains(toString.toLowerCase())){
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(friendLocation.get(i)));
-                mMap.animateCamera(CameraUpdateFactory.zoomTo(20));
-                return;
+            for (int i = 0; i < friendName.size(); i++) {
+                System.out.println(friendName.get(i));
+                if (friendName.get(i).toLowerCase().contains(toString.toLowerCase())) {
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(friendLocation.get(i)));
+                    mMap.animateCamera(CameraUpdateFactory.zoomTo(20));
+                    return;
+                }
             }
+            Toast.makeText(getActivity(), toString + " does not your friend", Toast.LENGTH_SHORT).show();
         }
-        Toast.makeText(getActivity(),toString+" does not your friend",Toast.LENGTH_SHORT).show();
-    }
+
 
 
     @Override
@@ -127,6 +145,7 @@ public class Fragment3 extends Fragment implements OnMapReadyCallback {
                         friendState.add(friend.getState());
                     }
 
+
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         @Override
                         public void run() {
@@ -138,12 +157,23 @@ public class Fragment3 extends Fragment implements OnMapReadyCallback {
 
 
                             for (int i = 0; i < friendList.length; i++){
-                                MarkerOptions friendOptions = new MarkerOptions();
-                                friendOptions.position(friendLocation.get(i)).title(friendName.get(i))
-                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-                                        .alpha(0.5f)
-                                        .snippet(friendState.get(i));
-                                mMap.addMarker(friendOptions);
+                                String text = "friend";
+                                if (friendState.get(i).contains(text.toLowerCase())) {
+                                    MarkerOptions friendOptions = new MarkerOptions();
+                                    friendOptions.position(friendLocation.get(i)).title(friendName.get(i))
+                                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA))
+                                            .alpha(0.4f)
+                                            .snippet(friendState.get(i));
+                                    mMap.addMarker(friendOptions);
+                                }else{
+                                    MarkerOptions friendOptions = new MarkerOptions();
+                                    friendOptions.position(friendLocation.get(i)).title(friendName.get(i))
+                                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+                                            .alpha(0.2f)
+                                            .snippet(friendState.get(i));
+                                    mMap.addMarker(friendOptions);
+                                    MarkerArray.add(friendOptions);
+                                }
                             }
 
                             mMap.addMarker(makerOptions);
@@ -168,5 +198,9 @@ public class Fragment3 extends Fragment implements OnMapReadyCallback {
         }).start();
         }
 
+    // refresh할 때 호출할 함수 - DB로부터 다시 유저 정보를 받아오고 어댑터에 담긴 친구 목록을 갱신해야 함.
+    private void reloadData() {
+        // TODO: 여기 채우기
+    }
 
 }

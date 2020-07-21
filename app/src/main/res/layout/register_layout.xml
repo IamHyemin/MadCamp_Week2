@@ -17,7 +17,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="30dp"
-        android:id = "@+id/edt_email"/>
+        android:backgroundTint="@color/colorPrimaryDark"
+        android:id = "@+id/edt_email" />
 
     <TextView
         android:layout_width="match_parent"
@@ -29,6 +30,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="30dp"
+        android:backgroundTint="@color/colorPrimaryDark"
         android:id = "@+id/edt_name"/>
 
     <TextView
@@ -42,7 +44,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="30dp"
+        android:backgroundTint="@color/colorPrimaryDark"
         android:id = "@+id/edt_password"
+        android:hint = "숫자, 영어 및 특수문자 포함 8자 이상"
         />
 
 

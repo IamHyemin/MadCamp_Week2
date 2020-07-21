@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="card_selected_dialog">
+
+        <item>좋아요 리스트 추가</item>
+
+        <item>설명 편집</item>
+
+        <item>삭제</item>
+
+    </string-array>
+
+    <string-array name="photo_upload_dialog">
+
+        <item>갤러리에서 가져오기</item>
+
+        <item>카메라</item>
+
+    </string-array>
+
+</resources>
