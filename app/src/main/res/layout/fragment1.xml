@@ -55,7 +55,7 @@
         android:scaleType="centerInside"
         android:contentDescription="FAB for adding Friend"
         android:layout_margin="16dp"
-        android:backgroundTint="#CBB0E6"
+        android:backgroundTint="#B5B0E6"
         />
 
 </FrameLayout>

@@ -58,13 +58,13 @@ import static android.os.Looper.getMainLooper;
 
 public class Fragment1 extends Fragment {
 
-    final ArrayList<User> userList = new ArrayList();
+
     PhoneAdapter adapter_search;
     ArrayList<User> SearchUser = new ArrayList<User>();
 
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
-
+        final ArrayList<User> userList = new ArrayList();
         //////////////////////////////// action bar /////////////////////////////////////////
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayUseLogoEnabled(true);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -78,9 +78,6 @@ public class Fragment1 extends Fragment {
 
         final String email = Objects.requireNonNull(intent.getExtras()).getString("email");
         final IMyService retrofitClient = RetrofitClient.getApiService();
-        final LocationManager lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-
-
 
 
         ////////////////////////////////////// 사용자 정보 받아오기 //////////////////////////////////
@@ -259,12 +256,11 @@ public class Fragment1 extends Fragment {
                         userList.add(friend);
                     }
 
-                    final PhoneAdapter adapter = new PhoneAdapter(userList, getContext());
-
                     new Handler(getMainLooper()).post(new Runnable() {
                         @Override
                         public void run() {
 
+                            final PhoneAdapter adapter = new PhoneAdapter(userList, getContext());
                             final ListView listView = view.findViewById(R.id.listView);
 //                            listView.setAdapter(adapter);
 
