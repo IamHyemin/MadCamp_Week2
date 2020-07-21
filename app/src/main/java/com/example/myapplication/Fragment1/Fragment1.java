@@ -141,7 +141,7 @@ public class Fragment1 extends Fragment {
                                                     final String state = stateView.getText().toString();
                                                     final String likeList_bfr = likeView.getText().toString();
 
-                                                    final String[] likeList = likeList_bfr.split(", ");
+                                                    final String[] likeList = likeList_bfr.split(" ");
                                                     new Handler(getMainLooper()).post(new Runnable() {
                                                                                           @Override
                                                                                           public void run() {
@@ -347,7 +347,7 @@ public class Fragment1 extends Fragment {
 
                                     String printfood = "";
                                     for (String elt : food) {
-                                        printfood += elt + ", ";
+                                        printfood += elt + " ";
                                     }
                                     likeView.setText(printfood);
 
