@@ -24,15 +24,19 @@ import android.widget.Toast;
 
 import com.example.myapplication.R;
 import com.example.myapplication.Retrofit.IMyService;
+import com.example.myapplication.Retrofit.MyImage;
 import com.example.myapplication.Retrofit.RetrofitClient;
+import com.example.myapplication.Retrofit.myFile;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import retrofit2.Response;
 import retrofit2.http.Multipart;
 
 import static android.os.Looper.getMainLooper;
@@ -114,22 +118,22 @@ public class UploadActivity extends AppCompatActivity {
                 final String titleString = nameView.getText().toString();
                 final String descriptionString = menuView.getText().toString();
 
-                final RequestBody title = RequestBody.create(MediaType.parse("text/plain; charset=utf-8"), titleString);
-                final RequestBody description = RequestBody.create(MediaType.parse("text/plain; charset=utf-8"), descriptionString);
+                // final RequestBody title = RequestBody.create(MediaType.parse("text/plain; charset=utf-8"), titleString);
+                final RequestBody title = RequestBody.create(MultipartBody.FORM, titleString);
+                final RequestBody description = RequestBody.create(MultipartBody.FORM, descriptionString);
 
                 final File file = new File(imgPath);
 
-                final RequestBody filePart = RequestBody.create(MediaType.parse("image/*"), file);
+                final RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), file);
 
-                /*
                 // MultipartBody.Part is used to send also the actual file name
-                MultipartBody.Part img = MultipartBody.Part.createFormData("imgFile", file.getName(), requestFile);
-                */
+                final MultipartBody.Part img = MultipartBody.Part.createFormData("imgFile", file.getName(), requestFile);
+
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
                         try {
-                            retrofitClient.uploadFile(filePart, titleString, descriptionString).execute();
+                            Response<myFile> response = retrofitClient.uploadFile(img, title, description).execute();
                         } catch (IOException e) {
                             e.printStackTrace();
                         }

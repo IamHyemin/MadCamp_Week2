@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import okhttp3.MultipartBody;
 
+import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 
@@ -67,9 +68,9 @@ public interface IMyService {
     // UPLOAD (IMAGE) FILE
     @Multipart
     @POST("/api/files/upload")
-    Call<MyImage> uploadFile(@Part("imgFile") RequestBody filePart,
-                             @Query("title") String title,
-                             @Query("description") String description);
+    Call<myFile> uploadFile(@Part MultipartBody.Part filePart,
+                             @Part("title") RequestBody title,
+                             @Part("description") RequestBody description);
 
     // GET ALL FILE
     @GET("/api/files")
