@@ -21,23 +21,25 @@
         android:background="@drawable/cirular_border"
         android:id="@+id/relLayout1">
 
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+        <ImageButton
+            android:backgroundTint="@color/md_divider_white"
             android:id="@+id/ic_search"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="20dp"
-            android:layout_marginRight="10dp"
-            android:src="@drawable/ic_stat_name" />
+            android:src="@drawable/search"
+            android:scaleType="centerCrop"/>
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
+            android:backgroundTint="@color/md_divider_white"
             android:layout_toRightOf="@+id/ic_search"
             android:textSize="15sp"
             android:textColor="#000"
-            android:id="@+id/addressET"
+            android:id="@+id/position_search"
             android:hint="  Enter User Name"
             android:inputType="text"
             android:imeOptions="actionSearch"/>

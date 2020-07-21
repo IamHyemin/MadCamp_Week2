@@ -15,9 +15,30 @@
             android:id="@+id/editSearch"
             android:layout_width="match_parent"
             android:layout_height="70dp"
-            android:hint="  Search the User!"
+            android:hint="  Search Your Friends"
             app:backgroundTint = "#EAE6EC"
             />
+
+        <TextView
+            android:background="@color/colorPrimaryDark"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:text="   내 정보" />
+
+        <ListView
+            android:id="@+id/listView_user"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:background="@color/colorPrimaryDark"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:padding="5dp"
+            android:text= "   친구 정보"/>
 
         <ListView
             android:id="@+id/listView"
@@ -32,9 +53,9 @@
         android:layout_gravity="end|bottom"
         android:src="@drawable/ic_add_foreground"
         android:scaleType="centerInside"
-        android:contentDescription="FAB for adding Photo"
+        android:contentDescription="FAB for adding Friend"
         android:layout_margin="16dp"
-        android:background="@drawable/gradation1"
+        android:backgroundTint="#CBB0E6"
         />
 
 </FrameLayout>

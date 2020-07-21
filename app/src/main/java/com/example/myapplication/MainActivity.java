@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
@@ -57,28 +58,6 @@ public class MainActivity extends AppCompatActivity {
     Button btn_login;
     TextView txt_create_account;
 
-    //////////////////////////////// for action bar //////////////////////////////////////
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.action_bar, menu);
-        return true;
-    }
-
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle presses on the action bar items
-        switch (item.getItemId()) {
-            case R.id.logout:
-                logout();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    private void logout() {
-        com.facebook.login.LoginManager.getInstance().logOut();
-    }
-
     /////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
@@ -88,10 +67,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         ////////////////////// action bar /////////////////////
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        getSupportActionBar().setIcon(R.drawable.honbab_main);
+        getSupportActionBar().hide();
+//                setDisplayShowHomeEnabled(true);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+//        getSupportActionBar().setDisplayShowTitleEnabled(false);
+//        getSupportActionBar().setIcon(R.drawable.honbab_main);
         ///////////////////////////////////////////////////////
 
         //////////////////////// Init Service ///////////////////////
@@ -99,8 +79,6 @@ public class MainActivity extends AppCompatActivity {
 
         ////////////////////////////// facebook login ///////////////////////////////////////
         callbackManager = CallbackManager.Factory.create();
-
-        System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 
         LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
         loginButton.setReadPermissions(Arrays.asList("public_profile", "email"));
@@ -110,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
                 GraphRequest graphRequest = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
                             @Override
                             public void onCompleted(JSONObject object, GraphResponse response) {
-                                Log.v("result", object.toString());
+                                Toast.makeText(MainActivity.this, "Login Success!", Toast.LENGTH_SHORT).show();
                                 Intent i = new Intent(getApplicationContext(), LoginAfter.class);
                                 try {
                                     ////////////////////// facebook login information throw to intent and db ////////////////////////
@@ -122,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
                                         @Override
                                         public void run() {
                                             ////////////////////////////// db에 없으면 데이터 추가 : 이미 존재하는 데이터면 안 들어갈 것이라 가정 ///////////////////////////
-                                            Call<User> createFaceBook = retrofitClient.createUser(new User(name, email, "0000"));
+                                            Call<User> createFaceBook = retrofitClient.createUser(new User(name, email, "00000000!a"));
                                             try {
                                                 createFaceBook.execute();
                                             } catch (IOException e) {
@@ -161,45 +139,46 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (TextUtils.isEmpty(edt_login_email.getText().toString())) {
+                    Toast.makeText(MainActivity.this, "Please write your Email!", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if (TextUtils.isEmpty(edt_login_password.getText().toString())) {
+                    Toast.makeText(MainActivity.this, "Please write your Password!", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 final String email = edt_login_email.getText().toString();
-                String password = edt_login_password.getText().toString();
+                final String password = edt_login_password.getText().toString();
                 final String[] realpassword = {""};
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
                         Call<User> tryUser = retrofitClient.getUser(email);
-                        try {
-                            realpassword[0] = Objects.requireNonNull(tryUser.execute().body()).getPassword();
-                            System.out.println(">>>>>>>>>>>>>>>>>>"+realpassword[0]);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                            try {
+                                realpassword[0] = Objects.requireNonNull(tryUser.execute().body()).getPassword();
+                                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (realpassword[0].equals(password)) {
+                                            Toast.makeText(MainActivity.this, "Login Success!", Toast.LENGTH_SHORT).show();
+                                            Intent i = new Intent(getApplicationContext(), LoginAfter.class);
+                                            i.putExtra("email", email);
+                                            startActivity(i);
+                                            finish();
+                                        } else {
+                                            Toast.makeText(MainActivity.this, "Wrong Password or Email", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                     }
                 }).start();
 
-                ///////////////////////////////로그인 시 1234=1234여도 false 반환 이유 모름////////////////////////
-
-                ///////일단 로그인을 위해/////
-                Intent i = new Intent(getApplicationContext(), LoginAfter.class);
-                i.putExtra("email", email);
-                startActivity(i);
-                finish();
-//                if (realpassword[0].equals(password)) {
-//                    System.out.println("혜민4");
-//                    Intent i = new Intent(getApplicationContext(), LoginAfter.class);
-//                    i.putExtra("email", email);
-//                    startActivity(i);
-//                    finish();
-//                }
             }
         //////////////////////////////////////////////////////////////
     });
-
+    ////////////////////////////////////////////////// registeration ////////////////////////////////////////////////
         txt_create_account = findViewById(R.id.txt_create_account);
         txt_create_account.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -207,6 +186,7 @@ public class MainActivity extends AppCompatActivity {
                 final View register_layout = LayoutInflater.from(MainActivity.this).inflate(R.layout.register_layout, null);
                 new MaterialStyledDialog.Builder(MainActivity.this)
                         .setTitle("Registeration")
+                        .setIcon(R.drawable.logo)
                         .setDescription("Please fill all fields")
                         .setCustomView(register_layout)
                         .setNegativeText("CANCLE")
@@ -239,7 +219,8 @@ public class MainActivity extends AppCompatActivity {
                                 new Thread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        Call<User> createFaceBook = retrofitClient.createUser(new User(edt_register_email.getText().toString(), edt_register_name.getText().toString(), edt_register_password.getText().toString()));
+                                        Call<User> createFaceBook = retrofitClient.createUser(new User(edt_register_name.getText().toString(),  edt_register_email.getText().toString(),  edt_register_password.getText().toString()));
+                                        System.out.println("Email is "+edt_register_email.getText().toString());
                                         try {
                                             createFaceBook.execute();
                                         } catch (IOException e) {
@@ -250,7 +231,6 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }).show();
             }
-
         });
     }
     @Override

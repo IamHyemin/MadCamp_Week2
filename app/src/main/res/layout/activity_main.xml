@@ -6,43 +6,47 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/white"
         android:orientation="vertical"
         android:padding="20dp"
-        tools:layout_editor_absoluteX="-33dp"
-        tools:layout_editor_absoluteY="95dp">
+        tools:layout_editor_absoluteX="204dp"
+        tools:layout_editor_absoluteY="188dp">
 
         <Space
             android:layout_width="match_parent"
-            android:layout_height="52dp" />
+            android:layout_height="46dp" />
 
         <ImageView
-
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/honbab_main"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
             android:layout_gravity="center"
-            />
+            android:src="@drawable/login" />
 
 
         <Space
             android:layout_width="match_parent"
-            android:layout_height="94dp" />
+            android:layout_height="27dp" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="30dp"
             android:text="EMAIL"
+            android:textColor="@color/colorPrimaryDark"
             android:textStyle="italic" />
 
         <EditText
             android:id="@+id/edt_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorPrimaryDark"
             android:layout_marginHorizontal="30dp" />
 
         <TextView
@@ -50,13 +54,16 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="30dp"
             android:text="PASSWORD"
+            android:textColor="@color/colorPrimaryDark"
             android:textStyle="italic" />
 
         <EditText
             android:id="@+id/edt_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="30dp" />
+            android:layout_marginHorizontal="30dp"
+            android:backgroundTint="@color/colorPrimaryDark"
+            android:inputType="textPassword"/>
 
         <Space
             android:layout_width="match_parent"
@@ -64,47 +71,42 @@
 
         <Button
             android:id="@+id/btn_login"
-            android:layout_width="308dp"
-            android:layout_height="38dp"
-            android:layout_marginHorizontal="30dp"
-            android:background="@drawable/gradation1"
-            android:text="Log in"
+            android:layout_width="223dp"
+            android:layout_height="31dp"
             android:layout_gravity="center"
+            android:layout_marginHorizontal="30dp"
+            android:background="@drawable/gradient2"
+            android:text="Log in"
             android:textColor="@android:color/white" />
 
         <Space
             android:layout_width="match_parent"
-            android:layout_height="24dp" />
+            android:layout_height="21dp" />
 
-        <com.facebook.login.widget.LoginButton
-            android:id="@+id/login_button"
-            android:layout_width="311dp"
-            android:layout_height="43dp"
-            android:layout_gravity="center" />
+        <TextView
+            android:id="@+id/txt_create_account"
+            android:layout_width="189dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="Make Your Account"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="18dp"
+            android:textStyle="bold" />
 
         <Space
             android:layout_width="match_parent"
-            android:layout_height="43dp" />
+            android:layout_height="150dp" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="30dp"
-            android:orientation="horizontal">
+        <com.facebook.login.widget.LoginButton
+            android:id="@+id/login_button"
+            android:layout_width="223dp"
+            android:layout_height="43dp"
+            android:layout_gravity="center" />
 
-            <TextView
-                android:id="@+id/txt_create_account"
-                android:layout_width="301dp"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textColor="@color/colorAccent"
-                android:text="Sign Up"
-                android:textSize="18dp"
-                android:textStyle="bold" />
-
-        </LinearLayout>
 
     </LinearLayout>
+    </ScrollView>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

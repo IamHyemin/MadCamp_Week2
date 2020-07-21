@@ -1,17 +1,29 @@
 package com.example.myapplication.Retrofit;
 
+import com.google.gson.JsonObject;
+
 import java.util.ArrayList;
 
 
+import okhttp3.MultipartBody;
+
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 
 public interface IMyService {
+
+    // -------------------------------[USER API]-------------------------------
     //Get all Users
     @GET("/api/users")
     Call<ArrayList<User>> getAllUser();
@@ -28,19 +40,47 @@ public interface IMyService {
     @PUT("/api/users/{user_email}")
     Call<User> updateUser(@Path("user_email") String user_email, @Body User user);
 
+    // UPDATE THE User Friend
+    @PUT("/api/users/friend/{user_email}/{friend_email}")
+    Call<User> updateUserFriend(@Path("user_email") String user_email, @Path("friend_email") String friend_email);
+
+    // DELETE THE USER FRIEND
+    @DELETE("/api/users/friend/{user_email}/{friend_email}")
+    Call<User> deleteUserFriend(@Path("user_email") String user_email, @Path("friend_email") String friend_email);
+
     // DELETE SINGLE USER BY EMAIL
     @DELETE("/api/users/{user_email}")
     Call<User> deleteUser(@Path("user_email") String user_email);
 
-    //    @POST("register")
-//    @FormUrlEncoded
-//    Observable<String> registerUser(@Field("email") String email,
-//                                    @Field("name") String name,
-//                                    @Field("phoneNum") String phoneNum,
-//                                    @Field("password") String password);
-//    @POST("login")
-//    @FormUrlEncoded
-//    Observable<String> loginUser(@Field("email") String email,
-//                                    @Field("password") String password);
+    // [ABOUT LIKE LIST]
+    // UPDATE THE USER - add to like list
+    @PUT("/api/users/likeList/:user_email")
+    Call<User> addToLikeList(@Path("user_email") String user_email, @Body Restaurant restaurant);
+
+    // UPDATE THE USER - delete in like list
+    @DELETE("/api/users/likeList/:user_email")
+    Call<User> deleteInLikeList(@Path("user_email") String user_email, @Body Restaurant restaurant);
+
+    // -------------------------------[FILE API]-------------------------------
+
+    // UPLOAD (IMAGE) FILE
+    @Multipart
+    @POST("/api/files/upload")
+    Call<MyImage> uploadFile(@Part("imageFile") MultipartBody.Part filePart,
+                             @Part("title") RequestBody title,
+                             @Part("description") RequestBody description);
+
+    // GET ALL FILE
+    @GET("/api/files")
+    Call<ArrayList<File>> getAllFile();
+
+    // UPDATE DESCRIPTION OF A SINGLE FILE
+    @PUT("/api/files/{saveFileName}")
+    Call<File> updateDescription(@Path("saveFileName") String saveFileName, @Body File file);
+
+    // DELETE THE FILE
+    @DELETE("api/files/{saveFileName}")
+    Call<File> deleteFile(@Path("saveFileName") String saveFileName);
+
 
 }

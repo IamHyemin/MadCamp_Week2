@@ -2,16 +2,26 @@ package com.example.myapplication.Fragment3;
 
 //import android.support.v4.app.FragmentActivity;
 //import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import com.example.myapplication.Fragment1.Fragment1;
 import com.example.myapplication.R;
+import com.example.myapplication.Retrofit.IMyService;
+import com.example.myapplication.Retrofit.RetrofitClient;
+import com.example.myapplication.Retrofit.User;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -21,9 +31,21 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Objects;
+
+import retrofit2.Response;
+
 public class Fragment3 extends Fragment implements OnMapReadyCallback {
 
+    final ArrayList<LatLng> friendLocation = new ArrayList<LatLng>();
+    final ArrayList<String> friendName = new ArrayList<String>();
+    final ArrayList<String> friendState = new ArrayList<String>();
+
     GoogleMap mMap;
+    final IMyService retrofitClient = RetrofitClient.getApiService();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -33,110 +55,116 @@ public class Fragment3 extends Fragment implements OnMapReadyCallback {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Intent intent = Objects.requireNonNull(getActivity()).getIntent();
+        final String email = Objects.requireNonNull(intent.getExtras()).getString("email");
 
-
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setIcon(R.drawable.honbab_main);
+        //////////////////////////////////// action bar //////////////////////////////////
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayUseLogoEnabled(true);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setLogo(R.drawable.logo);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setElevation(0);
+        //////////////////////////////////////////////////////////////////////////////////
 
         final View v = inflater.inflate(R.layout.fragment3, null, false);
+
+        ////////////////////////////////////////// for make map ////////////////////////////////////////////////////////
         SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        ImageButton btn_search = v.findViewById(R.id.ic_search);
+        final EditText search = v.findViewById(R.id.position_search);
+        btn_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                findTheUser(search.getText().toString());
+            }
+        });
+
         return v;
     }
+
+    private void findTheUser(String toString) {
+        for (int i = 0; i< friendName.size(); i++){
+            System.out.println(friendName.get(i));
+            if (friendName.get(i).toLowerCase().contains(toString.toLowerCase())){
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(friendLocation.get(i)));
+                return;
+            }
+        }
+        Toast.makeText(getActivity(),toString+" does not your friend",Toast.LENGTH_SHORT).show();
+    }
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        //지도타입 - 일반
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        oneMarker();
-        // manyMarker();
+        MyLocationMarker();
     }
 
-    //마커하나찍는 기본 예제
-    public void oneMarker() {
-        // 서울 여의도에 대한 위치 설정
-        LatLng seoul = new LatLng(37.52487, 126.92723);
-
-        // 구글 맵에 표시할 마커에 대한 옵션 설정  (알파는 좌표의 투명도이다.)
-        MarkerOptions makerOptions = new MarkerOptions();
-        makerOptions
-                .position(seoul)
-                .title("원하는 위치(위도, 경도)에 마커를 표시했습니다.")
-                .snippet("여기는 여의도인거같네여!!")
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
-                .alpha(0.5f);
-
-        // 마커를 생성한다. showInfoWindow를 쓰면 처음부터 마커에 상세정보가 뜨게한다. (안쓰면 마커눌러야뜸)
-        mMap.addMarker(makerOptions); //.showInfoWindow();
-
-        //정보창 클릭 리스너
-        mMap.setOnInfoWindowClickListener(infoWindowClickListener);
-
-        //마커 클릭 리스너
-        mMap.setOnMarkerClickListener(markerClickListener);
-
-        //카메라를 여의도 위치로 옮긴다.
-        // mMap.moveCamera(CameraUpdateFactory.newLatLng(seoul));
-        //처음 줌 레벨 설정 (해당좌표=>서울, 줌레벨(16)을 매개변수로 넣으면 된다.) (위에 코드대신 사용가능)(중첩되면 이걸 우선시하는듯)
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(seoul, 16));
-
-        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+    /////////////////////////////// 내 위치 찍기 //////////////////////////////////
+    public void MyLocationMarker() {
+        new Thread(new Runnable() {
             @Override
-            public boolean onMarkerClick(Marker marker) {
-                Toast.makeText(getActivity(), "눌렀습니다!!", Toast.LENGTH_LONG);
-                return false;
+            public void run() {
+                try {
+                    Intent intent = Objects.requireNonNull(getActivity()).getIntent();
+                    final String email = Objects.requireNonNull(intent.getExtras()).getString("email");
+                    Response<User> loginUser_res = retrofitClient.getUser(email).execute();
+                    final User loginUser = loginUser_res.body();
+                    final Double[] position_get = loginUser.getPosition();
+                    final String[] friendList = loginUser.getFriendsList();
+                    final LatLng myLocation = new LatLng(position_get[0], position_get[1]);
+
+
+                    for (String friend_email: friendList){
+                        User friend = retrofitClient.getUser(friend_email).execute().body();
+                        Double[] location  = friend.getPosition();
+                        friendLocation.add(new LatLng(location[0], location[1]));
+                        friendName.add(friend.getName());
+                        friendState.add(friend.getState());
+                    }
+
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run() {
+                            MarkerOptions makerOptions = new MarkerOptions();
+                            makerOptions.position(myLocation).title("내 위치")
+                                    .icon(BitmapDescriptorFactory
+                                    .defaultMarker(BitmapDescriptorFactory.HUE_VIOLET))
+                                    .alpha(0.5f);
+
+                            for (int i = 0; i < friendList.length; i++){
+                                MarkerOptions friendOptions = new MarkerOptions();
+                                friendOptions.position(friendLocation.get(i)).title(friendName.get(i))
+                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                                        .alpha(0.5f)
+                                        .snippet(friendState.get(i));
+                                mMap.addMarker(friendOptions);
+                            }
+
+                            mMap.addMarker(makerOptions);
+//                            mMap.setOnInfoWindowClickListener(infoWindowClickListener);
+//                            mMap.setOnMarkerClickListener(markerClickListener);
+                            mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
+                            mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+                            mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                                @Override
+                                public boolean onMarkerClick(Marker marker) {
+                                    Toast.makeText(getActivity(), "업데이트를 원하시면 연락처를 수정해주세요", Toast.LENGTH_LONG);
+                                    return false;
+                                }
+                            });
+                        }
+                    });
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
-        });
-    }
-
-    ////////////////////////  구글맵 마커 여러개생성 및 띄우기 //////////////////////////
-    public void manyMarker() {
-        // for loop를 통한 n개의 마커 생성
-        // 여기 수정하면 될 듯
-        for (int idx = 0; idx < 10; idx++) {
-            // 1. 마커 옵션 설정 (만드는 과정)
-            MarkerOptions makerOptions = new MarkerOptions();
-            makerOptions // LatLng에 대한 어레이를 만들어서 이용할 수도 있다.
-                    .position(new LatLng(37.52487 + idx, 126.92723))
-                    .title("마커" + idx); // 타이틀.
-
-            // 2. 마커 생성 (마커를 나타냄)
-            mMap.addMarker(makerOptions);
+        }).start();
         }
-        //정보창 클릭 리스너
-        mMap.setOnInfoWindowClickListener(infoWindowClickListener);
 
-        //마커 클릭 리스너
-        mMap.setOnMarkerClickListener(markerClickListener);
-
-        // 카메라를 위치로 옮긴다.
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(37.52487, 126.92723)));
-    }
-
-    //마커정보창 클릭리스너는 다작동하나, 마커클릭리스너는 snippet정보가 있으면 중복되어 이벤트처리가 안되는거같다.
-    // oneMarker(); 는 동작하지않으나 manyMarker(); 는 snippet정보가 없어 동작이가능하다.
-
-    //정보창 클릭 리스너
-    GoogleMap.OnInfoWindowClickListener infoWindowClickListener = new GoogleMap.OnInfoWindowClickListener() {
-        @Override
-        public void onInfoWindowClick(Marker marker) {
-            String markerId = marker.getId();
-            Toast.makeText(getActivity(), "정보창 클릭 Marker ID : "+markerId, Toast.LENGTH_SHORT).show();
-        }
-    };
-
-    //마커 클릭 리스너
-    GoogleMap.OnMarkerClickListener markerClickListener = new GoogleMap.OnMarkerClickListener() {
-        @Override
-        public boolean onMarkerClick(Marker marker) {
-            String markerId = marker.getId();
-            //선택한 타겟위치
-            LatLng location = marker.getPosition();
-            Toast.makeText(getActivity(), "마커 클릭 Marker ID : "+markerId+"("+location.latitude+" "+location.longitude+")", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-    };
 
 }

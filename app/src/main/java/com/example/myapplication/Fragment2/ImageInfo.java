@@ -1,11 +1,14 @@
 package com.example.myapplication.Fragment2;
 
+import android.graphics.Bitmap;
+import android.net.Uri;
+
 public class ImageInfo {
-    int image;
+    String image;
     String imageTitle;
     String imageMenu;
 
-    public ImageInfo(int image, String imageTitle, String imageMenu) {
+    public ImageInfo(String image, String imageTitle, String imageMenu) {
         this.image = image;
         this.imageTitle = imageTitle;
         this.imageMenu = imageMenu;
@@ -13,14 +16,14 @@ public class ImageInfo {
     public String getImageMenu() {
         return imageMenu;
     }
-    public int getImage(){
+    public String getImage(){
         return image;
     }
     public String getImageTitle(){
         return imageTitle;
     }
 
-    public void setImage(int image){
+    public void setImage(String image){
         this.image = image;
     }
     public void setImageTitle(String imageTitle){
