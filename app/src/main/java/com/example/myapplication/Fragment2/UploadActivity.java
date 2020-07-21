@@ -2,11 +2,15 @@ package com.example.myapplication.Fragment2;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.loader.content.CursorLoader;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -39,6 +43,8 @@ import okhttp3.RequestBody;
 import retrofit2.Response;
 import retrofit2.http.Multipart;
 
+import static android.Manifest.permission.CAMERA;
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.os.Looper.getMainLooper;
 
 
@@ -88,11 +94,20 @@ public class UploadActivity extends AppCompatActivity {
                             // "갤러리에서 불러오기" 눌렀을 때
                             case 0:
                                 // TODO : 외부 저장소 읽기 권한 요청 해야한다.
+                                // permission
+                                if (ContextCompat.checkSelfPermission(getApplicationContext(), READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+                                {
+                                    ActivityCompat.requestPermissions(UploadActivity.this, new String[]{READ_EXTERNAL_STORAGE}, 0);
+                                }
                                 getContent();
                                 break;
                             // "카메라" 눌렀을 때
                             case 1:
                                 // TODO : 카메라 권한 요청 해야한다.
+                                if (ContextCompat.checkSelfPermission(getApplicationContext(), CAMERA) != PackageManager.PERMISSION_GRANTED)
+                                {
+                                    ActivityCompat.requestPermissions(UploadActivity.this, new String[]{CAMERA}, 0);
+                                }
                                 takePicture();
                                 break;
                         }
