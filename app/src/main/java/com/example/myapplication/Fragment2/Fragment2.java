@@ -5,65 +5,49 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.example.myapplication.MainActivity;
 import com.example.myapplication.R;
 
 import com.example.myapplication.Retrofit.File;
 import com.example.myapplication.Retrofit.IMyService;
 import com.example.myapplication.Retrofit.RetrofitClient;
 
-import org.w3c.dom.Text;
-import com.example.myapplication.Retrofit.MyImage;
-import com.example.myapplication.Retrofit.User;
-
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import okhttp3.ResponseBody;
-import retrofit2.Response;
-
-import static android.app.Activity.RESULT_OK;
 import static android.os.Looper.getMainLooper;
 
 public class Fragment2 extends Fragment {
 
-    RecyclerView recyclerView;
-    SwipeRefreshLayout swipeRefreshLayout;
-    LinearLayoutManager linearLayoutManager;
+    private RecyclerView recyclerView;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private LinearLayoutManager linearLayoutManager;
     public static ArrayList<ImageInfo> mImages;
     public static ArrayList<ImageInfo> mImages_search;
-    ImageAdapter galleryRecyclerAdapter;
+    private ImageAdapter galleryRecyclerAdapter;
     private List<Integer> count;
     private int i = 0;
-    Context myContext ;
-    Bitmap storeImage;
+    private Context myContext ;
+    private Bitmap storeImage;
 
 
 
@@ -148,7 +132,7 @@ public class Fragment2 extends Fragment {
         View v = inflater.inflate(R.layout.fragment2, container, false);
 
         recyclerView = v.findViewById(R.id.recyclerView);
-        swipeRefreshLayout = v.findViewById(R.id.refresh_layout);
+        swipeRefreshLayout = v.findViewById(R.id.refresh_layout_fragment2);
         myContext = getContext();
         mImages = getImagesFromStorage();
         mImages_search = getImagesFromStorage();
@@ -210,7 +194,8 @@ public class Fragment2 extends Fragment {
 
                     }
                 });
-
+                
+                alertDialog.show();
             }
         });
 

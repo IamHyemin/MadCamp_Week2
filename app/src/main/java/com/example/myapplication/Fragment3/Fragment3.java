@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.myapplication.Fragment1.Fragment1;
 import com.example.myapplication.R;
@@ -39,6 +40,8 @@ import java.util.Objects;
 import retrofit2.Response;
 
 public class Fragment3 extends Fragment implements OnMapReadyCallback {
+
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     final ArrayList<LatLng> friendLocation = new ArrayList<LatLng>();
     final ArrayList<String> friendName = new ArrayList<String>();
@@ -80,6 +83,20 @@ public class Fragment3 extends Fragment implements OnMapReadyCallback {
             @Override
             public void onClick(View view) {
                 findTheUser(search.getText().toString());
+            }
+        });
+
+        // ---------------------------------[당겨서 새로고침 기능 추가]---------------------------------
+        swipeRefreshLayout = v.findViewById(R.id.refresh_layout_fragment3);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // 서버에서 데이터들 다시 불러와야 됨
+                reloadData();
+
+                // 새로고침 완료시,
+                // 새로고침 아이콘이 사라질 수 있게 isRefreshing = false
+                swipeRefreshLayout.setRefreshing(false);
             }
         });
 
@@ -185,5 +202,9 @@ public class Fragment3 extends Fragment implements OnMapReadyCallback {
         }).start();
         }
 
+    // refresh할 때 호출할 함수 - DB로부터 다시 유저 정보를 받아오고 어댑터에 담긴 친구 목록을 갱신해야 함.
+    private void reloadData() {
+        // TODO: 여기 채우기
+    }
 
 }

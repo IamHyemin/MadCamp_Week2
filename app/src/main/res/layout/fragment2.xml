@@ -20,7 +20,7 @@
             />
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/refresh_layout"
+            android:id="@+id/refresh_layout_fragment2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -64,6 +64,8 @@
                 android:text = "식당 추가하기"
                 android:textColor="@color/colorAccent"
                 android:layout_gravity="end"
+                android:clickable="true"
+                android:focusable="true"
                 />
 
         </LinearLayout>
