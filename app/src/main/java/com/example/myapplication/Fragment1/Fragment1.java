@@ -195,6 +195,8 @@ public class Fragment1 extends Fragment {
             }
         }).start();
 
+
+
         //////////////////////////////////////////FAB로 친구 추가////////////////////////////////////////////////////////
 
         FloatingActionButton phone_fab = view.findViewById(R.id.phone_fab);
@@ -294,6 +296,30 @@ public class Fragment1 extends Fragment {
                                 }
                             });
 
+                            /////////////////////////////////////////////// 버튼 누르면 친구찾는 상태만 /////////////////////////////////////
+                            final ImageButton btn_search = view.findViewById(R.id.ic_search_st);
+                            btn_search.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    String text = "want to find friends";
+                                    userList.clear();
+                                    for (int i = 0; i < SearchUser.size(); i++) {
+                                        if (SearchUser.get(i).getState().toLowerCase().contains(text.toLowerCase())) {
+                                            userList.add(SearchUser.get(i));
+                                        }
+                                    }
+                                    adapter.notifyDataSetChanged();
+                                    btn_search.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            userList.clear();
+                                            userList.addAll(SearchUser);
+                                            adapter.notifyDataSetChanged();
+                                        }
+                                    });
+                                }
+                            });
+                            ///////////////////////////////////////////////////////// 아이템 보여주기 /////////////////////////////////////
                             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                 @Override
                                 public void onItemClick(AdapterView parent, View v, int position, long id) {
