@@ -24,4 +24,7 @@ public class File {
         return saveFileName;
     }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
 }

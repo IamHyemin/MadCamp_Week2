@@ -22,6 +22,8 @@ import retrofit2.http.Part;
 import retrofit2.http.Path;
 
 public interface IMyService {
+
+    // -------------------------------[USER API]-------------------------------
     //Get all Users
     @GET("/api/users")
     Call<ArrayList<User>> getAllUser();
@@ -42,6 +44,25 @@ public interface IMyService {
     @PUT("/api/users/friend/{user_email}/{friend_email}")
     Call<User> updateUserFriend(@Path("user_email") String user_email, @Path("friend_email") String friend_email);
 
+    // DELETE THE USER FRIEND
+    @DELETE("/api/users/friend/{user_email}/{friend_email}")
+    Call<User> deleteUserFriend(@Path("user_email") String user_email, @Path("friend_email") String friend_email);
+
+    // DELETE SINGLE USER BY EMAIL
+    @DELETE("/api/users/{user_email}")
+    Call<User> deleteUser(@Path("user_email") String user_email);
+
+    // [ABOUT LIKE LIST]
+    // UPDATE THE USER - add to like list
+    @PUT("/api/users/likeList/:user_email")
+    Call<User> addToLikeList(@Path("user_email") String user_email, @Body Restaurant restaurant);
+
+    // UPDATE THE USER - delete in like list
+    @DELETE("/api/users/likeList/:user_email")
+    Call<User> deleteInLikeList(@Path("user_email") String user_email, @Body Restaurant restaurant);
+
+    // -------------------------------[FILE API]-------------------------------
+
     // UPLOAD (IMAGE) FILE
     @Multipart
     @POST("/api/files/upload")
@@ -49,14 +70,17 @@ public interface IMyService {
                              @Part("title") RequestBody title,
                              @Part("description") RequestBody description);
 
-    // DELETE SINGLE USER BY EMAIL
-    @DELETE("/api/users/{user_email}")
-    Call<User> deleteUser(@Path("user_email") String user_email);
-
-    //GET ALL FILE
+    // GET ALL FILE
     @GET("/api/files")
     Call<ArrayList<File>> getAllFile();
 
+    // UPDATE DESCRIPTION OF A SINGLE FILE
+    @PUT("/api/files/{saveFileName}")
+    Call<File> updateDescription(@Path("saveFileName") String saveFileName, @Body File file);
+
+    // DELETE THE FILE
+    @DELETE("api/files/{saveFileName}")
+    Call<File> deleteFile(@Path("saveFileName") String saveFileName);
 
 
 }
