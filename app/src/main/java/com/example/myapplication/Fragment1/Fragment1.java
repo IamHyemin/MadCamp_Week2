@@ -308,6 +308,7 @@ public class Fragment1 extends Fragment {
                                             userList.add(SearchUser.get(i));
                                         }
                                     }
+                                    Toast.makeText(getContext(), "밥 먹을 친구를 찾는 친구들입니다.", Toast.LENGTH_SHORT).show();
                                     adapter.notifyDataSetChanged();
                                     btn_search.setOnClickListener(new View.OnClickListener() {
                                         @Override
