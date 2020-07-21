@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -42,7 +43,11 @@ import retrofit2.Response;
 
 import static android.os.Looper.getMainLooper;
 
-public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.CustomViewHolder> {
+public class ImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+    // TYPE 정의용 상수들
+    private final int TYPE_ITEM = 1;
+    private final int TYPE_FOOTER = 2;
 
     private ArrayList<ImageInfo> mData;
     private Context mContext;
@@ -57,44 +62,74 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.CustomViewHo
         this.email = email;
     }
 
-
-    @Override
-    public CustomViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_item, parent, false);
-        CustomViewHolder viewHolder = new CustomViewHolder(view);
-
-        return viewHolder ;
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull CustomViewHolder holder, int position) {
-        if (mContext == null) {
-            System.out.println("context is null >>>>>>>>>>>");
-        }
-
-        final String image = mData.get(position).getImage();
-        final String title = mData.get(position).getImageTitle();
-        final String menu = mData.get(position).getImageMenu();
-
-        Uri printUri = Uri.parse("http://192.249.19.242:7980/api/files/download/"+image);
-
-        String[] menu_split = menu.split("\n");
-        String printmenu = "";
-        for (String elt : menu_split){
-            printmenu += elt + "\n";
-        }
-        Glide.with(mContext).load(printUri).into(holder.image);
-        holder.title.setText(title + "");
-        holder.content.setText(printmenu);
-
-    }
-
     // getItemCount() - 전체 데이터 갯수 리턴.
     @Override
     public int getItemCount() {
-        return mData.size() ;
+        //  ItemView에 들어갈 list의 개수 + Footer 1개
+        return mData.size() + 1;
     }
 
+
+    // position별로 item의 View Type을 정의
+    @Override
+    public int getItemViewType(int position) {
+        if (position == mData.size())
+            return TYPE_FOOTER;
+        else
+            return TYPE_ITEM; // 0 ~ (mData.size()-1)
+    }
+
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+        //  2번째 인자로 넘어온 viewType은 getItemViewType에서 return된 viewType이다
+        //  viewType에 따라 사용할 ViewHolder를 return
+        RecyclerView.ViewHolder viewHolder;
+        View view;
+
+        if (viewType == TYPE_FOOTER) {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment2_recyclerview_footer, parent, false);
+            viewHolder = new FooterViewHolder(view);
+        } else {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_item, parent, false);
+            viewHolder = new CustomViewHolder(view);
+        }
+
+        return viewHolder;
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+
+        if (holder instanceof FooterViewHolder) {
+            // FOOTER 용
+
+        } else if (holder instanceof CustomViewHolder){
+            // ITEM 용
+            if (mContext == null) {
+                System.out.println("context is null >>>>>>>>>>>");
+            }
+
+            CustomViewHolder customViewHolder = (CustomViewHolder) holder;
+
+            final String image = mData.get(position).getImage();
+            final String title = mData.get(position).getImageTitle();
+            final String menu = mData.get(position).getImageMenu();
+
+            Uri printUri = Uri.parse("http://192.249.19.242:7980/api/files/download/"+image);
+
+            String[] menu_split = menu.split("\n");
+            String printmenu = "";
+            for (String elt : menu_split){
+                printmenu += elt + "\n";
+            }
+            Glide.with(mContext).load(printUri).into(customViewHolder.image);
+            customViewHolder.title.setText(title + "");
+            customViewHolder.content.setText(printmenu);
+        }
+    }
+
+    // Item의 ViewHolder
     public class CustomViewHolder extends RecyclerView.ViewHolder {
         // RecylerView 항목 하나를 갖고 있는 ViewHolder
         ImageView image;
@@ -243,7 +278,51 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.CustomViewHo
 
         }
 
+    }
 
+    // Footer의 ViewHolder - 식당 추가 TextView
+    public class FooterViewHolder extends RecyclerView.ViewHolder {
+
+        private TextView add_res;
+
+        FooterViewHolder(View footerView) {
+            super(footerView);
+            add_res = footerView.findViewById(R.id.add_res);
+
+            add_res.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    final View add_layout = LayoutInflater.from(mContext).inflate(R.layout.add_rest, null);
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
+                    final TextView nameView = add_layout.findViewById(R.id.res_name);
+                    final TextView menuView = add_layout.findViewById(R.id.res_menu);
+                    final ImageButton photoView = add_layout.findViewById(R.id.res_photo);
+                    alertDialog.setView(add_layout);
+
+                    /*
+                    photoView.setOnClickListener(new View.OnClickListener(){
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent();
+                            intent.setType("image/*");
+                            intent.setAction(Intent.ACTION_GET_CONTENT);
+                            startActivityForResult(intent, 1);
+                        }
+                    });
+                     */
+
+                    alertDialog.setPositiveButton("ADD", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            String res_name = nameView.getText().toString();
+                            String res_menu = menuView.getText().toString();
+                        }
+                    });
+                    alertDialog.show();
+                }
+
+            });
+        }
     }
 
 }

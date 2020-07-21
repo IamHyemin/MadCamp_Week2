@@ -163,42 +163,6 @@ public class Fragment2 extends Fragment {
             }
         });
 
-
-        //////////////////////////////////////// 식당 추가하기 ///////////////////////////////////////
-        TextView txt_create_res = v.findViewById(R.id.add_res);
-        txt_create_res.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final View add_layout = LayoutInflater.from(getActivity()).inflate(R.layout.add_rest, null);
-                AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
-                final TextView nameView = add_layout.findViewById(R.id.res_name);
-                final TextView menuView = add_layout.findViewById(R.id.res_menu);
-                final ImageButton photoView = add_layout.findViewById(R.id.res_photo);
-                alertDialog.setView(add_layout);
-
-                photoView.setOnClickListener(new View.OnClickListener(){
-                    @Override
-                    public void onClick(View view) {
-                        Intent intent = new Intent();
-                        intent.setType("image/*");
-                        intent.setAction(Intent.ACTION_GET_CONTENT);
-                        startActivityForResult(intent, 1);
-                    }
-                });
-
-                alertDialog.setPositiveButton("ADD", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        String res_name = nameView.getText().toString();
-                        String res_menu = menuView.getText().toString();
-
-                    }
-                });
-                
-                alertDialog.show();
-            }
-        });
-
         // -----------------------[당겨서 새로고침 리스너 추가]-----------------------
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
