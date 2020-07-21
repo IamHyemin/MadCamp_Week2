@@ -88,13 +88,6 @@ public class Fragment2 extends Fragment {
         return res;
     }
 
-    private ArrayList<MyImage> getImagesFromStorage_2() {
-        ArrayList<MyImage> res = new ArrayList<>();
-        res.add(new MyImage( "Sambuja 부대찌개", "부대찌개 : 7000원"));
-        res.add(new MyImage("Hare", "등심돈까쓰 : 8000원 \n안심돈까쓰 : 9000원"));
-        return res;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

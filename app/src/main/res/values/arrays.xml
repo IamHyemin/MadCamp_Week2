@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="card_selected_dialog">
+
+        <item >설명 편집</item>
+
+        <item >삭제</item>
+
+    </string-array>
+
+</resources>

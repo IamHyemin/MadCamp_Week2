@@ -4,9 +4,9 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 
 public class ImageInfo {
-    String image;
-    String imageTitle;
-    String imageMenu;
+    String image; // saveFileName
+    String imageTitle; // Title
+    String imageMenu; // Description
 
     public ImageInfo(String image, String imageTitle, String imageMenu) {
         this.image = image;

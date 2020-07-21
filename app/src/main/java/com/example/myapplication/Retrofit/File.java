@@ -7,6 +7,10 @@ public class File {
     private String saveFileName;
     private String size;
 
+    public File (String description) {
+        this.description = description;
+    }
+
     public File (String title, String description){
         this.title = title;
         this.description = description;
@@ -24,4 +28,7 @@ public class File {
         return saveFileName;
     }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
 }
