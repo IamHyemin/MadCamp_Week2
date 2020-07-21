@@ -42,6 +42,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import okhttp3.ResponseBody;
 import retrofit2.Response;
@@ -59,6 +60,8 @@ public class Fragment2 extends Fragment {
     private int i = 0;
     Context myContext ;
     Bitmap storeImage;
+
+
 
     final IMyService retrofitClient = RetrofitClient.getApiService();
 
@@ -104,6 +107,9 @@ public class Fragment2 extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState){
 
+        Intent intent = Objects.requireNonNull(getActivity()).getIntent();
+        final String email = Objects.requireNonNull(intent.getExtras()).getString("email");
+
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayUseLogoEnabled(true);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -118,7 +124,7 @@ public class Fragment2 extends Fragment {
             ////////////////////////////////////// 검색 //////////////////////////////////////////////
         final EditText editSearch = v.findViewById(R.id.editSearch);
 
-        galleryRecyclerAdapter = new ImageAdapter(myContext, mImages);
+        galleryRecyclerAdapter = new ImageAdapter(myContext, mImages, email);
         recyclerView.setAdapter(galleryRecyclerAdapter);
 
         linearLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());

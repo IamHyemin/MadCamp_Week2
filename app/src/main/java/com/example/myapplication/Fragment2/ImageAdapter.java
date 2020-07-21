@@ -3,6 +3,7 @@ package com.example.myapplication.Fragment2;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -15,8 +16,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 
@@ -24,11 +27,13 @@ import com.bumptech.glide.Glide;
 import com.example.myapplication.R;
 import com.example.myapplication.Retrofit.File;
 import com.example.myapplication.Retrofit.IMyService;
+import com.example.myapplication.Retrofit.Restaurant;
 import com.example.myapplication.Retrofit.RetrofitClient;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -41,12 +46,15 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.CustomViewHo
 
     private ArrayList<ImageInfo> mData;
     private Context mContext;
+    private String email;
+
 
     final IMyService retrofitClient = RetrofitClient.getApiService();
 
-    public ImageAdapter(Context context, ArrayList<ImageInfo> mData) {
+    public ImageAdapter(Context context, ArrayList<ImageInfo> mData, String email) {
         this.mContext = context;
         this.mData = mData;
+        this.email = email;
     }
 
 
@@ -113,12 +121,41 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.CustomViewHo
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 switch (i) {
-                                    // "설명 편집" 눌렀을 때
+                                    // "좋아요 편집" 눌렀을 때
                                     case 0:
+                                        System.out.println("print 시작 ");
+                                        new Thread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                try {
+                                                    String[] list_user =  Objects.requireNonNull(retrofitClient.getUser(email).execute().body()).getLikeList();
+                                                    System.out.println("print 시작2 ");
+                                                    int index = -1;
+                                                    for (int i = 0; i<list_user.length; i++){
+                                                        if (list_user[i].equals(mData.get(pos).getImageTitle())){
+                                                            index = i;
+                                                            break;
+                                                        }
+                                                    }
+                                                    System.out.println("index is "+ index);
+                                                    if (index != -1){
+
+                                                    }else{
+                                                        retrofitClient.addToLikeList(email, new Restaurant(mData.get(pos).getImageTitle())).execute();
+                                                        System.out.println("add~~~~~~~~~~");
+                                                    }
+                                                } catch (IOException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                        }).start();
+                                        break;
+                                    // "설명 편집" 눌렀을 때
+                                    case 1:
                                         createEditionDialog(pos); // 편집용 대화상자 열기
                                         break;
                                     // "삭제" 눌렀을 때
-                                    case 1:
+                                    case 2:
                                         final String targetSaveFileName = mData.get(pos).image;
                                         new Thread(new Runnable() {
                                             @Override
