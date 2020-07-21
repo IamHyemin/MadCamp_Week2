@@ -54,11 +54,11 @@ public interface IMyService {
 
     // [ABOUT LIKE LIST]
     // UPDATE THE USER - add to like list
-    @PUT("/api/users/likeList/:user_email")
+    @PUT("/api/users/likeList/{user_email}")
     Call<User> addToLikeList(@Path("user_email") String user_email, @Body Restaurant restaurant);
 
     // UPDATE THE USER - delete in like list
-    @DELETE("/api/users/likeList/:user_email")
+    @DELETE("/api/users/likeList/{user_email}")
     Call<User> deleteInLikeList(@Path("user_email") String user_email, @Body Restaurant restaurant);
 
     // -------------------------------[FILE API]-------------------------------

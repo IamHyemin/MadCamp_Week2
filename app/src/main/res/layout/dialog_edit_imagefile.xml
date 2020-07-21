@@ -2,17 +2,21 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <TextView
-        android:id="@+id/dialog_title"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:text="@string/edition_dialog_title_string"
-        android:textAlignment="center"
-        android:textSize="18sp" />
+        android:layout_height="100dp"
+        android:text="식당 설명 편집"
+        android:textStyle="italic"
+        android:textSize="25sp"
+        android:textColor="@android:color/white"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
+        android:background="@drawable/gradation1"
+        android:gravity="center"/>
+
 
     <EditText
         android:id="@+id/description"
@@ -24,6 +28,7 @@
         android:layout_marginBottom="4dp"
         android:hint="@string/edition_dialog_description_string"
         android:inputType="text"
+        android:backgroundTint="@color/colorPrimaryDark"
         android:textAlignment="viewStart"
         android:maxLength="1000"/>
 

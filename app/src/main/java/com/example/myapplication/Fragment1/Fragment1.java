@@ -125,8 +125,19 @@ public class Fragment1 extends Fragment {
                                     phoneView.setText(phoneNum);
                                     stateView.setText(state);
                                     String likeprint1 = "";
-                                    for (String elt : likeList) {
-                                        likeprint1 = elt + " ";
+
+                                    if (likeList.length <= 1){
+                                        for (String elt : likeList){
+                                            likeprint1 = elt;
+                                        }
+                                    }else {
+                                        for (int i = 0; i < likeList.length; i++) {
+                                            if (i == likeList.length -1) {
+                                                likeprint1 = likeprint1+ "" + likeList[i];
+                                            }else {
+                                                likeprint1 = likeprint1 + likeList[i] + ", ";
+                                            }
+                                        }
                                     }
                                     likeView.setText(likeprint1);
 
@@ -140,7 +151,6 @@ public class Fragment1 extends Fragment {
                                                     final String phoneNum = phoneView.getText().toString();
                                                     final String state = stateView.getText().toString();
                                                     final String likeList_bfr = likeView.getText().toString();
-
                                                     final String[] likeList = likeList_bfr.split(", ");
                                                     new Handler(getMainLooper()).post(new Runnable() {
                                                                                           @Override
@@ -194,6 +204,8 @@ public class Fragment1 extends Fragment {
 
             }
         }).start();
+
+
 
         //////////////////////////////////////////FAB로 친구 추가////////////////////////////////////////////////////////
 
@@ -294,6 +306,31 @@ public class Fragment1 extends Fragment {
                                 }
                             });
 
+                            /////////////////////////////////////////////// 버튼 누르면 친구찾는 상태만 /////////////////////////////////////
+                            final ImageButton btn_search = view.findViewById(R.id.ic_search_st);
+                            btn_search.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    String text = "want to find friends";
+                                    userList.clear();
+                                    for (int i = 0; i < SearchUser.size(); i++) {
+                                        if (SearchUser.get(i).getState().toLowerCase().contains(text.toLowerCase())) {
+                                            userList.add(SearchUser.get(i));
+                                        }
+                                    }
+                                    Toast.makeText(getContext(), "밥 먹을 친구를 찾는 친구들입니다.", Toast.LENGTH_SHORT).show();
+                                    adapter.notifyDataSetChanged();
+                                    btn_search.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            userList.clear();
+                                            userList.addAll(SearchUser);
+                                            adapter.notifyDataSetChanged();
+                                        }
+                                    });
+                                }
+                            });
+                            ///////////////////////////////////////////////////////// 아이템 보여주기 /////////////////////////////////////
                             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                 @Override
                                 public void onItemClick(AdapterView parent, View v, int position, long id) {
@@ -320,7 +357,7 @@ public class Fragment1 extends Fragment {
 
                                     String printfood = "";
                                     for (String elt : food) {
-                                        printfood += elt + ", ";
+                                        printfood += elt + " ";
                                     }
                                     likeView.setText(printfood);
 

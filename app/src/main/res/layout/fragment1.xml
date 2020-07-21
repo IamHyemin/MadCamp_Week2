@@ -11,13 +11,31 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/editSearch"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:hint="  Search Your Friends"
-            app:backgroundTint = "#EAE6EC"
-            />
+            android:layout_height="wrap_content"
+            android:orientation = "horizontal">
+
+            <ImageButton
+                android:id="@+id/ic_search_st"
+                android:layout_width="47dp"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_find2_foreground" />
+
+            <EditText
+                android:id="@+id/editSearch"
+                android:layout_weight="8"
+                android:layout_width="wrap_content"
+                android:layout_height="70dp"
+                android:hint="  Search Your Friends"
+                app:backgroundTint = "#EAE6EC"
+                />
+
+        </LinearLayout>
 
         <TextView
             android:background="@color/colorPrimaryDark"
@@ -55,7 +73,7 @@
         android:scaleType="centerInside"
         android:contentDescription="FAB for adding Friend"
         android:layout_margin="16dp"
-        android:backgroundTint="#B5B0E6"
+        android:backgroundTint="#C0B0E6"
         />
 
 </FrameLayout>

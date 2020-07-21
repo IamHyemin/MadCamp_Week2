@@ -43,6 +43,8 @@ public class Fragment3 extends Fragment implements OnMapReadyCallback {
     final ArrayList<LatLng> friendLocation = new ArrayList<LatLng>();
     final ArrayList<String> friendName = new ArrayList<String>();
     final ArrayList<String> friendState = new ArrayList<String>();
+    final ArrayList <MarkerOptions> MarkerArray = new ArrayList<>();
+
 
     GoogleMap mMap;
     final IMyService retrofitClient = RetrofitClient.getApiService();
@@ -81,20 +83,23 @@ public class Fragment3 extends Fragment implements OnMapReadyCallback {
             }
         });
 
+
+
         return v;
     }
 
     private void findTheUser(String toString) {
-        for (int i = 0; i< friendName.size(); i++){
-            System.out.println(friendName.get(i));
-            if (friendName.get(i).toLowerCase().contains(toString.toLowerCase())){
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(friendLocation.get(i)));
-                mMap.animateCamera(CameraUpdateFactory.zoomTo(20));
-                return;
+            for (int i = 0; i < friendName.size(); i++) {
+                System.out.println(friendName.get(i));
+                if (friendName.get(i).toLowerCase().contains(toString.toLowerCase())) {
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(friendLocation.get(i)));
+                    mMap.animateCamera(CameraUpdateFactory.zoomTo(20));
+                    return;
+                }
             }
+            Toast.makeText(getActivity(), toString + " does not your friend", Toast.LENGTH_SHORT).show();
         }
-        Toast.makeText(getActivity(),toString+" does not your friend",Toast.LENGTH_SHORT).show();
-    }
+
 
 
     @Override
@@ -127,6 +132,7 @@ public class Fragment3 extends Fragment implements OnMapReadyCallback {
                         friendState.add(friend.getState());
                     }
 
+
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         @Override
                         public void run() {
@@ -138,12 +144,23 @@ public class Fragment3 extends Fragment implements OnMapReadyCallback {
 
 
                             for (int i = 0; i < friendList.length; i++){
-                                MarkerOptions friendOptions = new MarkerOptions();
-                                friendOptions.position(friendLocation.get(i)).title(friendName.get(i))
-                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-                                        .alpha(0.5f)
-                                        .snippet(friendState.get(i));
-                                mMap.addMarker(friendOptions);
+                                String text = "friend";
+                                if (friendState.get(i).contains(text.toLowerCase())) {
+                                    MarkerOptions friendOptions = new MarkerOptions();
+                                    friendOptions.position(friendLocation.get(i)).title(friendName.get(i))
+                                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA))
+                                            .alpha(0.4f)
+                                            .snippet(friendState.get(i));
+                                    mMap.addMarker(friendOptions);
+                                }else{
+                                    MarkerOptions friendOptions = new MarkerOptions();
+                                    friendOptions.position(friendLocation.get(i)).title(friendName.get(i))
+                                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+                                            .alpha(0.2f)
+                                            .snippet(friendState.get(i));
+                                    mMap.addMarker(friendOptions);
+                                    MarkerArray.add(friendOptions);
+                                }
                             }
 
                             mMap.addMarker(makerOptions);

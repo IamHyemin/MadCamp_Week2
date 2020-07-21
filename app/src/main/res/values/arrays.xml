@@ -3,6 +3,8 @@
 
     <string-array name="card_selected_dialog">
 
+        <item>좋아요 리스트 추가</item>
+
         <item >설명 편집</item>
 
         <item >삭제</item>
