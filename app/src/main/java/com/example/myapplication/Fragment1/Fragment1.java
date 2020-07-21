@@ -33,6 +33,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.myapplication.MainActivity;
 import com.example.myapplication.R;
@@ -58,12 +59,12 @@ import static android.os.Looper.getMainLooper;
 
 public class Fragment1 extends Fragment {
 
-
+    private SwipeRefreshLayout swipeRefreshLayout;
     PhoneAdapter adapter_search;
     ArrayList<User> SearchUser = new ArrayList<User>();
 
     @Override
-    public View onCreateView(final LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
         final ArrayList<User> userList = new ArrayList();
         //////////////////////////////// action bar /////////////////////////////////////////
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayUseLogoEnabled(true);
@@ -79,6 +80,19 @@ public class Fragment1 extends Fragment {
         final String email = Objects.requireNonNull(intent.getExtras()).getString("email");
         final IMyService retrofitClient = RetrofitClient.getApiService();
 
+        // ---------------------------------[당겨서 새로고침 기능 추가]---------------------------------
+        swipeRefreshLayout = view.findViewById(R.id.refresh_layout_fragment1);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // 서버에서 데이터들 다시 불러와야 됨
+                reloadUserInfos();
+
+                // 새로고침 완료시,
+                // 새로고침 아이콘이 사라질 수 있게 isRefreshing = false
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
 
         ////////////////////////////////////// 사용자 정보 받아오기 //////////////////////////////////
         new Thread(new Runnable() {
@@ -415,5 +429,9 @@ public class Fragment1 extends Fragment {
         return view;
     }
 
+    // refresh할 때 호출할 함수 - DB로부터 다시 유저 정보를 받아오고 어댑터에 담긴 친구 목록을 갱신해야 함.
+    private void reloadUserInfos() {
+        // TODO: 여기 채우기
+    }
 
 }
