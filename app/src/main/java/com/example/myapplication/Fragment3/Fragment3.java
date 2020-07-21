@@ -55,14 +55,6 @@ public class Fragment3 extends Fragment implements OnMapReadyCallback {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        Intent intent = Objects.requireNonNull(getActivity()).getIntent();
-        final String email = Objects.requireNonNull(intent.getExtras()).getString("email");
-
         //////////////////////////////////// action bar //////////////////////////////////
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayUseLogoEnabled(true);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -71,12 +63,20 @@ public class Fragment3 extends Fragment implements OnMapReadyCallback {
         ((AppCompatActivity) getActivity()).getSupportActionBar().setElevation(0);
         //////////////////////////////////////////////////////////////////////////////////
 
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        Intent intent = Objects.requireNonNull(getActivity()).getIntent();
+        final String email = Objects.requireNonNull(intent.getExtras()).getString("email");
         final View v = inflater.inflate(R.layout.fragment3, null, false);
 
         ////////////////////////////////////////// for make map ////////////////////////////////////////////////////////
         SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        ////////////////////////////////////////////// 사람 찾기 ////////////////////////////////////////////////
         ImageButton btn_search = v.findViewById(R.id.ic_search);
         final EditText search = v.findViewById(R.id.position_search);
         btn_search.setOnClickListener(new View.OnClickListener() {
@@ -93,15 +93,11 @@ public class Fragment3 extends Fragment implements OnMapReadyCallback {
             public void onRefresh() {
                 // 서버에서 데이터들 다시 불러와야 됨
                 reloadData();
-
                 // 새로고침 완료시,
                 // 새로고침 아이콘이 사라질 수 있게 isRefreshing = false
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
-
-
-
         return v;
     }
 

@@ -61,6 +61,7 @@ public class Fragment1 extends Fragment {
 
     private SwipeRefreshLayout swipeRefreshLayout;
     PhoneAdapter adapter_search;
+    PhoneAdapter adapter;
     ArrayList<User> SearchUser = new ArrayList<User>();
 
     @Override
@@ -86,7 +87,26 @@ public class Fragment1 extends Fragment {
             @Override
             public void onRefresh() {
                 // 서버에서 데이터들 다시 불러와야 됨
-                reloadUserInfos();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Response<User> loginUser_res = retrofitClient.getUser(email).execute();
+                            userList.clear();
+                            final User loginUser = loginUser_res.body();
+                            assert loginUser != null;
+                            final String[] friendList = loginUser.getFriendsList();
+                            for (String email_friend : friendList) {
+                                User friend = retrofitClient.getUser(email_friend).execute().body();
+                                userList.add(friend);
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
+                adapter.notifyDataSetChanged();
+//                reloadUserInfos();
 
                 // 새로고침 완료시,
                 // 새로고침 아이콘이 사라질 수 있게 isRefreshing = false
@@ -277,8 +297,6 @@ public class Fragment1 extends Fragment {
                     final String[] friendList = loginUser.getFriendsList();
                     for (String email_friend : friendList) {
                         User friend = retrofitClient.getUser(email_friend).execute().body();
-                        assert friend != null;
-                        System.out.println("friend is "+ friend.getName());
                         userList.add(friend);
                     }
 
@@ -286,7 +304,7 @@ public class Fragment1 extends Fragment {
                         @Override
                         public void run() {
 
-                            final PhoneAdapter adapter = new PhoneAdapter(userList, getContext());
+                            adapter = new PhoneAdapter(userList, getContext());
                             final ListView listView = view.findViewById(R.id.listView);
 //                            listView.setAdapter(adapter);
 
@@ -432,6 +450,8 @@ public class Fragment1 extends Fragment {
     // refresh할 때 호출할 함수 - DB로부터 다시 유저 정보를 받아오고 어댑터에 담긴 친구 목록을 갱신해야 함.
     private void reloadUserInfos() {
         // TODO: 여기 채우기
+
+
     }
 
 }
