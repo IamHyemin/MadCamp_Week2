@@ -89,6 +89,7 @@ public class Fragment3 extends Fragment implements OnMapReadyCallback {
             System.out.println(friendName.get(i));
             if (friendName.get(i).toLowerCase().contains(toString.toLowerCase())){
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(friendLocation.get(i)));
+                mMap.animateCamera(CameraUpdateFactory.zoomTo(20));
                 return;
             }
         }
@@ -134,6 +135,7 @@ public class Fragment3 extends Fragment implements OnMapReadyCallback {
                                     .icon(BitmapDescriptorFactory
                                     .defaultMarker(BitmapDescriptorFactory.HUE_VIOLET))
                                     .alpha(0.5f);
+
 
                             for (int i = 0; i < friendList.length; i++){
                                 MarkerOptions friendOptions = new MarkerOptions();
