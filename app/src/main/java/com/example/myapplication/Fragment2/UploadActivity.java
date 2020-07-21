@@ -9,8 +9,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.view.View;
 import android.view.Window;
@@ -25,11 +28,14 @@ import com.example.myapplication.Retrofit.RetrofitClient;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.http.Multipart;
+
+import static android.os.Looper.getMainLooper;
 
 
 // 사진 업로드용 서브액티비티
@@ -108,17 +114,27 @@ public class UploadActivity extends AppCompatActivity {
                 final String titleString = nameView.getText().toString();
                 final String descriptionString = menuView.getText().toString();
 
-                RequestBody title = RequestBody.create(MediaType.parse("text/plain; charset=utf-8"), titleString);
-                RequestBody description = RequestBody.create(MediaType.parse("text/plain; charset=utf-8"), descriptionString);
+                final RequestBody title = RequestBody.create(MediaType.parse("text/plain; charset=utf-8"), titleString);
+                final RequestBody description = RequestBody.create(MediaType.parse("text/plain; charset=utf-8"), descriptionString);
 
                 final File file = new File(imgPath);
 
-                RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+                final RequestBody filePart = RequestBody.create(MediaType.parse("image/*"), file);
 
+                /*
                 // MultipartBody.Part is used to send also the actual file name
-                MultipartBody.Part img = MultipartBody.Part.createFormData("imageFile", file.getName(), requestFile);
-
-                retrofitClient.uploadFile(img, title, description);
+                MultipartBody.Part img = MultipartBody.Part.createFormData("imgFile", file.getName(), requestFile);
+                */
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            retrofitClient.uploadFile(filePart, titleString, descriptionString).execute();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
 
                 UploadActivity.this.finish();
             }
@@ -176,7 +192,7 @@ public class UploadActivity extends AppCompatActivity {
         switch (requestCode) {
             case REQUEST_TAKE_PICTURE:
                 if (resultCode == RESULT_OK) {
-
+                    // TODO : 일단 비워둠
                     /*
                         Bundle extras = data.getExtras();
                         Bitmap imageBitmap = (Bitmap) extras.get("data");
@@ -187,9 +203,23 @@ public class UploadActivity extends AppCompatActivity {
 
             case REQUEST_GET_CONTENT:
                 if (resultCode == RESULT_OK) {
-                    // 선택한 사진의 경로(Uri) 객체 얻어오기기
+                    /*
+                    try {
+
+                        InputStream is = UploadActivity.this.getContentResolver().openInputStream(data.getData());
+                        Bitmap bm = BitmapFactory.decodeStream(is);
+                        is.close();
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                     */
+
+
+                    // 선택한 사진의 경로(Uri) 객체 얻어오기
                     Uri uri = data.getData();
                     if (uri != null) {
+                        // photoView.setImageURI(uri);
                         //갤러리앱에서 관리하는 DB정보가 있는데, 그것이 나온다 [실제 파일 경로가 아님!!]
                         //얻어온 Uri는 Gallery앱의 DB번호임. (content://-----/2854)
                         //업로드를 하려면 이미지의 절대경로(실제 경로: file:// -------/aaa.png 이런식)가 필요함
@@ -198,6 +228,7 @@ public class UploadActivity extends AppCompatActivity {
                     } else {
                         Toast.makeText(this, "이미지 선택을 하지 않았습니다.", Toast.LENGTH_SHORT).show();
                     }
+
                 }
                 break;
         }

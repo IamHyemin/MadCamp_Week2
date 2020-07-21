@@ -20,6 +20,7 @@ import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface IMyService {
 
@@ -66,9 +67,9 @@ public interface IMyService {
     // UPLOAD (IMAGE) FILE
     @Multipart
     @POST("/api/files/upload")
-    Call<MyImage> uploadFile(@Part("imageFile") MultipartBody.Part filePart,
-                             @Part("title") RequestBody title,
-                             @Part("description") RequestBody description);
+    Call<MyImage> uploadFile(@Part("imgFile") RequestBody filePart,
+                             @Query("title") String title,
+                             @Query("description") String description);
 
     // GET ALL FILE
     @GET("/api/files")
