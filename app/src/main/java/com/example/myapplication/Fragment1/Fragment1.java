@@ -125,8 +125,19 @@ public class Fragment1 extends Fragment {
                                     phoneView.setText(phoneNum);
                                     stateView.setText(state);
                                     String likeprint1 = "";
-                                    for (String elt : likeList) {
-                                        likeprint1 = elt + " ";
+
+                                    if (likeList.length <= 1){
+                                        for (String elt : likeList){
+                                            likeprint1 = elt;
+                                        }
+                                    }else {
+                                        for (int i = 0; i < likeList.length; i++) {
+                                            if (i == likeList.length -1) {
+                                                likeprint1 = likeprint1+ "" + likeList[i];
+                                            }else {
+                                                likeprint1 = likeprint1 + likeList[i] + ", ";
+                                            }
+                                        }
                                     }
                                     likeView.setText(likeprint1);
 
@@ -140,8 +151,7 @@ public class Fragment1 extends Fragment {
                                                     final String phoneNum = phoneView.getText().toString();
                                                     final String state = stateView.getText().toString();
                                                     final String likeList_bfr = likeView.getText().toString();
-
-                                                    final String[] likeList = likeList_bfr.split(" ");
+                                                    final String[] likeList = likeList_bfr.split(", ");
                                                     new Handler(getMainLooper()).post(new Runnable() {
                                                                                           @Override
                                                                                           public void run() {
