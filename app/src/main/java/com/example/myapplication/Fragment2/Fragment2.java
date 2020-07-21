@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -25,6 +26,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.myapplication.MainActivity;
 import com.example.myapplication.R;
@@ -47,10 +49,12 @@ import okhttp3.ResponseBody;
 import retrofit2.Response;
 
 import static android.app.Activity.RESULT_OK;
+import static android.os.Looper.getMainLooper;
 
 public class Fragment2 extends Fragment {
 
     RecyclerView recyclerView;
+    SwipeRefreshLayout swipeRefreshLayout;
     LinearLayoutManager linearLayoutManager;
     public static ArrayList<ImageInfo> mImages;
     public static ArrayList<ImageInfo> mImages_search;
@@ -88,6 +92,33 @@ public class Fragment2 extends Fragment {
         return res;
     }
 
+    private void setImagesFromStorage() {
+        final ArrayList<ImageInfo> res = new ArrayList<>();
+        /////////////////////////////// db에서 데이터 받아오기 /////////////////////////////////////
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    ArrayList<File> loginUser_res = retrofitClient.getAllFile().execute().body();
+                    for (File elt : loginUser_res){
+                        res.add(new ImageInfo(elt.getSaveFileName(), elt.getTitle(), elt.getDescription()));
+                    }
+                    new Handler(getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mImages.clear();
+                            mImages.addAll(res);
+                            mImages_search = res;
+                            galleryRecyclerAdapter.notifyDataSetChanged();
+                        }
+                    });
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,11 +142,12 @@ public class Fragment2 extends Fragment {
         View v = inflater.inflate(R.layout.fragment2, container, false);
 
         recyclerView = v.findViewById(R.id.recyclerView);
+        swipeRefreshLayout = v.findViewById(R.id.refresh_layout);
         myContext = getContext();
         mImages = getImagesFromStorage();
         mImages_search = getImagesFromStorage();
 
-            ////////////////////////////////////// 검색 //////////////////////////////////////////////
+        ////////////////////////////////////// 검색 //////////////////////////////////////////////
         final EditText editSearch = v.findViewById(R.id.editSearch);
 
         galleryRecyclerAdapter = new ImageAdapter(myContext, mImages);
@@ -173,6 +205,20 @@ public class Fragment2 extends Fragment {
                     }
                 });
 
+            }
+        });
+
+        // -----------------------[당겨서 새로고침 리스너 추가]-----------------------
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // 서버에서 파일들 다시 불러와야 됨
+                setImagesFromStorage();
+
+                // 새로고침 완료시,
+                // 새로고침 아이콘이 사라질 수 있게 isRefreshing = false
+                swipeRefreshLayout.setRefreshing(false);
             }
         });
 
