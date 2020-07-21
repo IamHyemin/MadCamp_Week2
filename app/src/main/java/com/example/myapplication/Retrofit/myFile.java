@@ -1,17 +1,17 @@
 package com.example.myapplication.Retrofit;
 
-public class File {
+public class myFile {
     private String title;
     private String description;
     private String orgFileName;
     private String saveFileName;
     private String size;
 
-    public File (String description) {
+    public myFile (String description) {
         this.description = description;
     }
 
-    public File (String title, String description){
+    public myFile (String title, String description){
         this.title = title;
         this.description = description;
     }

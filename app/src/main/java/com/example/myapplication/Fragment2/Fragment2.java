@@ -24,7 +24,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.myapplication.R;
 
-import com.example.myapplication.Retrofit.File;
+import com.example.myapplication.Retrofit.myFile;
 import com.example.myapplication.Retrofit.IMyService;
 import com.example.myapplication.Retrofit.RetrofitClient;
 
@@ -67,8 +67,8 @@ public class Fragment2 extends Fragment {
             @Override
             public void run() {
                 try {
-                    ArrayList<File> loginUser_res = retrofitClient.getAllFile().execute().body();
-                    for (File elt : loginUser_res){
+                    ArrayList<myFile> loginUser_res = retrofitClient.getAllFile().execute().body();
+                    for (myFile elt : loginUser_res){
                         res.add(new ImageInfo(elt.getSaveFileName(), elt.getTitle(), elt.getDescription()));
                     }
                 } catch (IOException e) {
@@ -86,8 +86,8 @@ public class Fragment2 extends Fragment {
             @Override
             public void run() {
                 try {
-                    ArrayList<File> loginUser_res = retrofitClient.getAllFile().execute().body();
-                    for (File elt : loginUser_res){
+                    ArrayList<myFile> loginUser_res = retrofitClient.getAllFile().execute().body();
+                    for (myFile elt : loginUser_res){
                         res.add(new ImageInfo(elt.getSaveFileName(), elt.getTitle(), elt.getDescription()));
                     }
                     new Handler(getMainLooper()).post(new Runnable() {
@@ -179,26 +179,6 @@ public class Fragment2 extends Fragment {
 
         return v;
     }
-
-//    @Override
-//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        // Check which request we're responding to
-//        if (requestCode == 1) {
-//            // Make sure the request was successful
-//            if (resultCode == RESULT_OK) {
-//                try {
-//                    // 선택한 이미지에서 비트맵 생성
-//                    InputStream in = getActivity().getContentResolver().openInputStream(data.getData());
-//                    Bitmap img = BitmapFactory.decodeStream(in);
-//                    in.close();
-//                    storeImage = img;
-////                    imageView.setImageBitmap(img);
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
-//    }
 
     public void search(String charText) {
         mImages.clear();

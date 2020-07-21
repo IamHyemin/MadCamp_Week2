@@ -72,15 +72,15 @@ public interface IMyService {
 
     // GET ALL FILE
     @GET("/api/files")
-    Call<ArrayList<File>> getAllFile();
+    Call<ArrayList<myFile>> getAllFile();
 
     // UPDATE DESCRIPTION OF A SINGLE FILE
     @PUT("/api/files/{saveFileName}")
-    Call<File> updateDescription(@Path("saveFileName") String saveFileName, @Body File file);
+    Call<myFile> updateDescription(@Path("saveFileName") String saveFileName, @Body myFile file);
 
     // DELETE THE FILE
     @DELETE("api/files/{saveFileName}")
-    Call<File> deleteFile(@Path("saveFileName") String saveFileName);
+    Call<myFile> deleteFile(@Path("saveFileName") String saveFileName);
 
 
 }

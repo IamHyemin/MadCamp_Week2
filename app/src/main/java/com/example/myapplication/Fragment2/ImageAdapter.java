@@ -25,8 +25,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 
 import com.bumptech.glide.Glide;
+import com.example.myapplication.LoginAfter;
 import com.example.myapplication.R;
-import com.example.myapplication.Retrofit.File;
+import com.example.myapplication.Retrofit.myFile;
 import com.example.myapplication.Retrofit.IMyService;
 import com.example.myapplication.Retrofit.Restaurant;
 import com.example.myapplication.Retrofit.RetrofitClient;
@@ -46,8 +47,8 @@ import static android.os.Looper.getMainLooper;
 public class ImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     // TYPE 정의용 상수들
-    private final int TYPE_ITEM = 1;
-    private final int TYPE_FOOTER = 2;
+    private static final int TYPE_ITEM = 1;
+    private static final int TYPE_FOOTER = 2;
 
     private ArrayList<ImageInfo> mData;
     private Context mContext;
@@ -242,7 +243,7 @@ public class ImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
                             final String targetSaveFileName = target.image;
                             final String inputDescription = editText_description.getText().toString();
-                            final File updateContent = new File(inputDescription); // updateContent 에는 description 만 담겨있음
+                            final myFile updateContent = new myFile(inputDescription); // updateContent 에는 description 만 담겨있음
 
                             // 서버와 통신하는 부분 (update Description)
                             new Thread(new Runnable() {
@@ -280,7 +281,7 @@ public class ImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     }
 
-    // Footer의 ViewHolder - 식당 추가 TextView
+    // Footer의 ViewHolder - "식당 추가하기" TextView
     public class FooterViewHolder extends RecyclerView.ViewHolder {
 
         private TextView add_res;
@@ -292,37 +293,51 @@ public class ImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             add_res.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    final View add_layout = LayoutInflater.from(mContext).inflate(R.layout.add_rest, null);
-                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
-                    final TextView nameView = add_layout.findViewById(R.id.res_name);
-                    final TextView menuView = add_layout.findViewById(R.id.res_menu);
-                    final ImageButton photoView = add_layout.findViewById(R.id.res_photo);
-                    alertDialog.setView(add_layout);
+
+                    // 사진 업로드용 서브액티비티를 호출한다
+                    Intent intent = new Intent(mContext, UploadActivity.class);
+                    mContext.startActivity(intent);
+
 
                     /*
+                    final View add_layout = LayoutInflater.from(mContext).inflate(R.layout.add_rest, null);
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
+
+                    alertDialog.setView(add_layout);
+
+
                     photoView.setOnClickListener(new View.OnClickListener(){
                         @Override
                         public void onClick(View view) {
                             Intent intent = new Intent();
                             intent.setType("image/*");
                             intent.setAction(Intent.ACTION_GET_CONTENT);
-                            startActivityForResult(intent, 1);
+                            ((LoginAfter)mContext).startActivityForResult(intent, REQUESTCODE_GET_CONTENT);
                         }
                     });
-                     */
+
 
                     alertDialog.setPositiveButton("ADD", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             String res_name = nameView.getText().toString();
                             String res_menu = menuView.getText().toString();
+                            // TODO: 서버에 파일 업로드 해야함.
                         }
                     });
+
                     alertDialog.show();
+                     */
                 }
 
             });
         }
+
+
     }
+
+
+
+
 
 }
