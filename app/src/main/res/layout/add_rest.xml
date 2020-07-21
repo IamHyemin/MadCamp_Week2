@@ -54,13 +54,14 @@
         android:backgroundTint="@color/colorPrimaryDark"/>
 
     <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="125dp"
+        android:layout_height="125dp"
         android:id="@+id/res_photo"
         android:layout_gravity="center"
         android:layout_marginTop="50dp"
         android:src ="@drawable/ic_photo_foreground"
         android:background="@android:color/transparent"
+        android:scaleType="centerCrop"
         />
 
     <androidx.constraintlayout.widget.ConstraintLayout
