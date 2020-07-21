@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -28,20 +29,22 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.myapplication.MainActivity;
 import com.example.myapplication.R;
 
+import com.example.myapplication.Retrofit.File;
 import com.example.myapplication.Retrofit.IMyService;
 import com.example.myapplication.Retrofit.RetrofitClient;
 
 import org.w3c.dom.Text;
 import com.example.myapplication.Retrofit.MyImage;
+import com.example.myapplication.Retrofit.User;
 
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.ResponseBody;
+import retrofit2.Response;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -68,22 +71,20 @@ public class Fragment2 extends Fragment {
 
     private ArrayList<ImageInfo> getImagesFromStorage() {
         final ArrayList<ImageInfo> res = new ArrayList<>();
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                try {
-//                    ArrayList<ResponseBody> result = retrofitClient.getAllFile().execute().body();
-//                    for (ResponseBody elt : result) {
-//                        InputStream is = elt.byteStream();
-//                        Bitmap bitmap = BitmapFactory.decodeStream(is);
-//                        res.add(new ImageInfo(bitmap, "A", "B"));
-//                    }
-//
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }).start();
+        /////////////////////////////// db에서 데이터 받아오기 /////////////////////////////////////
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    ArrayList<File> loginUser_res = retrofitClient.getAllFile().execute().body();
+                    for (File elt : loginUser_res){
+                        res.add(new ImageInfo(elt.getSaveFileName(), elt.getTitle(), elt.getDescription()));
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
         return res;
     }
 
@@ -97,6 +98,13 @@ public class Fragment2 extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //////////////////////////////// action bar /////////////////////////////////////////
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayUseLogoEnabled(true);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setLogo(R.drawable.logo);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setElevation(0);
+        //////////////////////////////////////////////////////////////////////////////////////
     }
 
     @Override
@@ -106,7 +114,7 @@ public class Fragment2 extends Fragment {
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayUseLogoEnabled(true);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setLogo(R.drawable.honbab_main);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setLogo(R.drawable.logo);
         View v = inflater.inflate(R.layout.fragment2, container, false);
 
         recyclerView = v.findViewById(R.id.recyclerView);
@@ -114,8 +122,7 @@ public class Fragment2 extends Fragment {
         mImages = getImagesFromStorage();
         mImages_search = getImagesFromStorage();
 
-
-        ////////////////////////////////////// 검색 //////////////////////////////////////////////
+            ////////////////////////////////////// 검색 //////////////////////////////////////////////
         final EditText editSearch = v.findViewById(R.id.editSearch);
 
         galleryRecyclerAdapter = new ImageAdapter(myContext, mImages);
@@ -179,25 +186,25 @@ public class Fragment2 extends Fragment {
         return v;
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // Check which request we're responding to
-        if (requestCode == 1) {
-            // Make sure the request was successful
-            if (resultCode == RESULT_OK) {
-                try {
-                    // 선택한 이미지에서 비트맵 생성
-                    InputStream in = getActivity().getContentResolver().openInputStream(data.getData());
-                    Bitmap img = BitmapFactory.decodeStream(in);
-                    in.close();
-                    storeImage = img;
-//                    imageView.setImageBitmap(img);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        // Check which request we're responding to
+//        if (requestCode == 1) {
+//            // Make sure the request was successful
+//            if (resultCode == RESULT_OK) {
+//                try {
+//                    // 선택한 이미지에서 비트맵 생성
+//                    InputStream in = getActivity().getContentResolver().openInputStream(data.getData());
+//                    Bitmap img = BitmapFactory.decodeStream(in);
+//                    in.close();
+//                    storeImage = img;
+////                    imageView.setImageBitmap(img);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+//    }
 
     public void search(String charText) {
         mImages.clear();

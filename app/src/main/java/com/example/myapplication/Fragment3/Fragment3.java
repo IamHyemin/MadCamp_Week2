@@ -59,9 +59,11 @@ public class Fragment3 extends Fragment implements OnMapReadyCallback {
         final String email = Objects.requireNonNull(intent.getExtras()).getString("email");
 
         //////////////////////////////////// action bar //////////////////////////////////
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setIcon(R.drawable.honbab_main);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayUseLogoEnabled(true);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setLogo(R.drawable.logo);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setElevation(0);
         //////////////////////////////////////////////////////////////////////////////////
 
         final View v = inflater.inflate(R.layout.fragment3, null, false);
@@ -146,7 +148,7 @@ public class Fragment3 extends Fragment implements OnMapReadyCallback {
 //                            mMap.setOnInfoWindowClickListener(infoWindowClickListener);
 //                            mMap.setOnMarkerClickListener(markerClickListener);
                             mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
-                            mMap.animateCamera(CameraUpdateFactory.zoomTo(10));
+                            mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
                             mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                                 @Override
                                 public boolean onMarkerClick(Marker marker) {

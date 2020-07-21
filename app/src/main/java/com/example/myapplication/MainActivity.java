@@ -67,10 +67,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         ////////////////////// action bar /////////////////////
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        getSupportActionBar().setIcon(R.drawable.honbab_main);
+        getSupportActionBar().hide();
+//                setDisplayShowHomeEnabled(true);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+//        getSupportActionBar().setDisplayShowTitleEnabled(false);
+//        getSupportActionBar().setIcon(R.drawable.honbab_main);
         ///////////////////////////////////////////////////////
 
         //////////////////////// Init Service ///////////////////////
@@ -185,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
                 final View register_layout = LayoutInflater.from(MainActivity.this).inflate(R.layout.register_layout, null);
                 new MaterialStyledDialog.Builder(MainActivity.this)
                         .setTitle("Registeration")
-                        .setIcon(R.drawable.honbab_main)
+                        .setIcon(R.drawable.logo)
                         .setDescription("Please fill all fields")
                         .setCustomView(register_layout)
                         .setNegativeText("CANCLE")

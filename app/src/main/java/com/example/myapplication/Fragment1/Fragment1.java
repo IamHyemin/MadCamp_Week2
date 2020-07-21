@@ -1,6 +1,7 @@
 package com.example.myapplication.Fragment1;
 
 import android.Manifest;
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -64,12 +65,13 @@ public class Fragment1 extends Fragment {
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
 
-        ////////////////////////////////// action bar /////////////////////////////////////////
+        //////////////////////////////// action bar /////////////////////////////////////////
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayUseLogoEnabled(true);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setLogo(R.drawable.honbab_main);
-        ////////////////////////////////////////////////////////////////////////////////////////
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setLogo(R.drawable.logo);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setElevation(0);
+        //////////////////////////////////////////////////////////////////////////////////////
 
         final View view = inflater.inflate(R.layout.fragment1, container, false);
         Intent intent = getActivity().getIntent();

@@ -21,7 +21,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text= "   Your Information"/>
+            android:text= "   내 정보"/>
 
         <ListView
             android:id="@+id/listView_user"
@@ -33,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text= "   Friend Information"/>
+            android:text= "   친구 정보"/>
 
         <ListView
             android:id="@+id/listView"
