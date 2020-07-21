@@ -6,7 +6,6 @@
 
     <item
         android:id="@+id/logout"
-        android:icon="@drawable/ic_off_foreground"
         android:title="logout"
         app:showAsAction="always"/>
 

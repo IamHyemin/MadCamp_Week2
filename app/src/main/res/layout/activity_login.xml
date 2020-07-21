@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@android:color/white"
     android:layout_width="match_parent"
+    app:elevation="0dp"
     android:layout_height="match_parent"
     xmlns:app = "http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
@@ -11,17 +12,18 @@
         android:id="@+id/tab"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:elevation="0dp"
         app:tabBackground="@android:color/white"
         app:tabIndicatorColor="@android:color/white"
         app:tabSelectedTextColor="@color/colorPrimaryDark"
-        app:tabTextColor="@android:color/darker_gray"
-        >
+        app:tabTextColor="@android:color/darker_gray">
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/tab_Item1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tab1" />
+            android:text="Tab1"
+            app:elevation="0dp" />
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/tab_Item2"

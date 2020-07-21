@@ -10,6 +10,7 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
@@ -52,13 +53,9 @@ public interface IMyService {
     @DELETE("/api/users/{user_email}")
     Call<User> deleteUser(@Path("user_email") String user_email);
 
-    // CREATE USER
-    @POST("/api/files/upload")
-    Call<JsonObject> createFile(@Body File file);
-
     //GET ALL FILE
     @GET("/api/files")
-    Call<ArrayList<ResponseBody>> getAllFile();
+    Call<ArrayList<File>> getAllFile();
 
 
 

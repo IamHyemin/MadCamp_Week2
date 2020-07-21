@@ -67,10 +67,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         ////////////////////// action bar /////////////////////
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        getSupportActionBar().setIcon(R.drawable.honbab_main);
+        getSupportActionBar().hide();
+//                setDisplayShowHomeEnabled(true);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+//        getSupportActionBar().setDisplayShowTitleEnabled(false);
+//        getSupportActionBar().setIcon(R.drawable.honbab_main);
         ///////////////////////////////////////////////////////
 
         //////////////////////// Init Service ///////////////////////
@@ -99,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
                                         @Override
                                         public void run() {
                                             ////////////////////////////// db에 없으면 데이터 추가 : 이미 존재하는 데이터면 안 들어갈 것이라 가정 ///////////////////////////
-                                            Call<User> createFaceBook = retrofitClient.createUser(new User(name, email, "0000"));
+                                            Call<User> createFaceBook = retrofitClient.createUser(new User(name, email, "00000000!a"));
                                             try {
                                                 createFaceBook.execute();
                                             } catch (IOException e) {
@@ -185,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
                 final View register_layout = LayoutInflater.from(MainActivity.this).inflate(R.layout.register_layout, null);
                 new MaterialStyledDialog.Builder(MainActivity.this)
                         .setTitle("Registeration")
-                        .setIcon(R.drawable.honbab_main)
+                        .setIcon(R.drawable.logo)
                         .setDescription("Please fill all fields")
                         .setCustomView(register_layout)
                         .setNegativeText("CANCLE")

@@ -18,10 +18,13 @@
             android:hint="  Search Your Friends"
             app:backgroundTint = "#EAE6EC"
             />
+
         <TextView
-            android:layout_width="wrap_content"
+            android:background="@color/colorPrimaryDark"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text= "   Your Information"/>
+            android:padding="5dp"
+            android:text="   내 정보" />
 
         <ListView
             android:id="@+id/listView_user"
@@ -30,10 +33,12 @@
             android:layout_marginTop="10dp" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
+            android:background="@color/colorPrimaryDark"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text= "   Friend Information"/>
+            android:padding="5dp"
+            android:text= "   친구 정보"/>
 
         <ListView
             android:id="@+id/listView"
@@ -50,7 +55,7 @@
         android:scaleType="centerInside"
         android:contentDescription="FAB for adding Friend"
         android:layout_margin="16dp"
-        android:backgroundTint="@color/colorPrimaryDark"
+        android:backgroundTint="#CBB0E6"
         />
 
 </FrameLayout>

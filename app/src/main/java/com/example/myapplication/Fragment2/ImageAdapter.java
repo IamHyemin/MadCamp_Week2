@@ -3,6 +3,7 @@ package com.example.myapplication.Fragment2;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,12 +55,20 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.CustomViewHo
             System.out.println("context is null >>>>>>>>>>>");
         }
 
-        final Bitmap image = mData.get(position).getImage();
+        final String image = mData.get(position).getImage();
         final String title = mData.get(position).getImageTitle();
         final String menu = mData.get(position).getImageMenu();
-        Glide.with(mContext).load(image).into(holder.image);
+
+        Uri printUri = Uri.parse("http://192.249.19.242:7980/api/files/download/"+image);
+
+        String[] menu_split = menu.split("\n");
+        String printmenu = "";
+        for (String elt : menu_split){
+            printmenu += elt + "\n";
+        }
+        Glide.with(mContext).load(printUri).into(holder.image);
         holder.title.setText(title + "");
-        holder.content.setText(menu + "");
+        holder.content.setText(printmenu);
 
     }
 

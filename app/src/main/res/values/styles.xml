@@ -3,7 +3,7 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">#FFFFFF</item>
-        <item name="colorPrimaryDark">#fbc2eb</item>
+        <item name="colorPrimaryDark">#A8A8AC</item>
         <item name="colorAccent">#a18cd1</item>
         <!--<item name="android:windowFullscreen">true</item> -->
     </style>

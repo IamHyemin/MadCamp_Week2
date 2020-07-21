@@ -1,6 +1,7 @@
 package com.example.myapplication.Fragment1;
 
 import android.Manifest;
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -64,12 +65,13 @@ public class Fragment1 extends Fragment {
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
 
-        ////////////////////////////////// action bar /////////////////////////////////////////
+        //////////////////////////////// action bar /////////////////////////////////////////
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayUseLogoEnabled(true);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setLogo(R.drawable.honbab_main);
-        ////////////////////////////////////////////////////////////////////////////////////////
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setLogo(R.drawable.logo);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setElevation(0);
+        //////////////////////////////////////////////////////////////////////////////////////
 
         final View view = inflater.inflate(R.layout.fragment1, container, false);
         Intent intent = getActivity().getIntent();
@@ -88,6 +90,7 @@ public class Fragment1 extends Fragment {
                 try {
                     Response<User> loginUser_res = retrofitClient.getUser(email).execute();
                     final User loginUser = loginUser_res.body();
+                    assert loginUser != null;
                     final String[] friendList = loginUser.getFriendsList();
                     final String name = loginUser.getName();
                     final String phoneNum = loginUser.getPhoneNum();
@@ -247,10 +250,11 @@ public class Fragment1 extends Fragment {
                 try {
                     Response<User> loginUser_res = retrofitClient.getUser(email).execute();
                     final User loginUser = loginUser_res.body();
+                    assert loginUser != null;
                     final String[] friendList = loginUser.getFriendsList();
-
                     for (String email_friend : friendList) {
                         User friend = retrofitClient.getUser(email_friend).execute().body();
+                        assert friend != null;
                         System.out.println("friend is "+ friend.getName());
                         userList.add(friend);
                     }
