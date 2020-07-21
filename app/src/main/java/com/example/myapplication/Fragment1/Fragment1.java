@@ -167,40 +167,40 @@ public class Fragment1 extends Fragment {
                                                     final String likeList_bfr = likeView.getText().toString();
                                                     final String[] likeList = likeList_bfr.split(", ");
                                                     new Handler(getMainLooper()).post(new Runnable() {
-                                                                                          @Override
-                                                                                          public void run() {
+                                                          @Override
+                                                          public void run() {
 
-                                                                                              if ((ContextCompat.checkSelfPermission(Objects.requireNonNull(getActivity()).getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) &&
-                                                                                                      (ContextCompat.checkSelfPermission(Objects.requireNonNull(getActivity()).getApplicationContext(), ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)) {
-                                                                                                  ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION}, 0);
-                                                                                              }
-                                                                                              GpsTracker gpsTracker = new GpsTracker(getContext());
-                                                                                              double latitude = gpsTracker.getLatitude();
-                                                                                              double longitude = gpsTracker.getLongitude();
-                                                                                              position_get[0] = latitude;
-                                                                                              position_get[1] = longitude;
-                                                                                              System.out.println("the position is :" + latitude + " and " + longitude);
-                                                                                              final User updateUser = new User(name, email, password, position_get, phoneNum, state, likeList, friendList);
-                                                                                              new Thread(new Runnable() {
-                                                                                                  @Override
-                                                                                                  public void run() {
-                                                                                                      try {
-                                                                                                          retrofitClient.updateUser(email, updateUser).execute();
-                                                                                                          new Handler(getMainLooper()).post(new Runnable() {
-                                                                                                              @Override
-                                                                                                              public void run() {
-                                                                                                                  userInfo.remove(0);
-                                                                                                                  userInfo.add(updateUser);
-                                                                                                                  user_adapter.notifyDataSetChanged();
-                                                                                                              }
-                                                                                                          });
-                                                                                                      } catch (IOException ex) {
-                                                                                                          ex.printStackTrace();
-                                                                                                      }
-                                                                                                  }
-                                                                                              }).start();
-                                                                                          }
-                                                                                      });
+                                                              if ((ContextCompat.checkSelfPermission(Objects.requireNonNull(getActivity()).getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) &&
+                                                                      (ContextCompat.checkSelfPermission(Objects.requireNonNull(getActivity()).getApplicationContext(), ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)) {
+                                                                  ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION}, 0);
+                                                              }
+                                                              GpsTracker gpsTracker = new GpsTracker(getContext());
+                                                              double latitude = gpsTracker.getLatitude();
+                                                              double longitude = gpsTracker.getLongitude();
+                                                              position_get[0] = latitude;
+                                                              position_get[1] = longitude;
+                                                              System.out.println("the position is :" + latitude + " and " + longitude);
+                                                              final User updateUser = new User(name, email, password, position_get, phoneNum, state, likeList, friendList);
+                                                              new Thread(new Runnable() {
+                                                                  @Override
+                                                                  public void run() {
+                                                                      try {
+                                                                          retrofitClient.updateUser(email, updateUser).execute();
+                                                                          new Handler(getMainLooper()).post(new Runnable() {
+                                                                              @Override
+                                                                              public void run() {
+                                                                                  userInfo.remove(0);
+                                                                                  userInfo.add(updateUser);
+                                                                                  user_adapter.notifyDataSetChanged();
+                                                                              }
+                                                                          });
+                                                                      } catch (IOException ex) {
+                                                                          ex.printStackTrace();
+                                                                      }
+                                                                  }
+                                                              }).start();
+                                                          }
+                                                      });
 
                                                 }
                                             }).start();

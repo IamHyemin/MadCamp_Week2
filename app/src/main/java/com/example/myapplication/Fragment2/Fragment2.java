@@ -180,26 +180,6 @@ public class Fragment2 extends Fragment {
         return v;
     }
 
-//    @Override
-//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        // Check which request we're responding to
-//        if (requestCode == 1) {
-//            // Make sure the request was successful
-//            if (resultCode == RESULT_OK) {
-//                try {
-//                    // 선택한 이미지에서 비트맵 생성
-//                    InputStream in = getActivity().getContentResolver().openInputStream(data.getData());
-//                    Bitmap img = BitmapFactory.decodeStream(in);
-//                    in.close();
-//                    storeImage = img;
-////                    imageView.setImageBitmap(img);
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
-//    }
-
     public void search(String charText) {
         mImages.clear();
         if (charText.length() == 0) {

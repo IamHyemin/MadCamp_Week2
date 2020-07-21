@@ -280,7 +280,7 @@ public class ImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     }
 
-    // Footer의 ViewHolder - 식당 추가 TextView
+    // Footer의 ViewHolder - "식당 추가하기" TextView
     public class FooterViewHolder extends RecyclerView.ViewHolder {
 
         private TextView add_res;
@@ -316,8 +316,10 @@ public class ImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         public void onClick(DialogInterface dialogInterface, int i) {
                             String res_name = nameView.getText().toString();
                             String res_menu = menuView.getText().toString();
+                            // TODO: 서버에 파일 업로드 해야함.
                         }
                     });
+
                     alertDialog.show();
                 }
 
