@@ -265,9 +265,8 @@ public class Fragment1 extends Fragment {
                                         Toast.makeText(getContext(), "You cannot be your friend", Toast.LENGTH_SHORT).show();
                                     }else if (newfriend.code() == 404){
                                         Toast.makeText(getContext(), "There is no user who has the email", Toast.LENGTH_SHORT).show();
-                                    }else{
-                                        Toast.makeText(getContext(), "Success!", Toast.LENGTH_SHORT).show();
                                     }
+
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
